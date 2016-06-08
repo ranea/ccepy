@@ -1,0 +1,595 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cuerpos_finitos &mdash; documentación de ccepy - 0.0.1</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="documentación de ccepy - 0.0.1" href="../index.html"/>
+        <link rel="up" title="Código de módulo" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ccepy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Primeros pasos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aritmetica_elemental.html">Aritmética elemental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cuerpos_finitos.html">Cuerpos finitos</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">ccepy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Código de módulo</a> &raquo;</li>
+      
+    <li>cuerpos_finitos</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Código fuente para cuerpos_finitos</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Cuerpos finitos.</span>
+
+<span class="sd">Este módulo permite operar con elementos de un cuerpos finito de q elementos,</span>
+<span class="sd">donde q será la potencia de un primo.</span>
+
+<span class="sd">Para utilizar las funciones y las clases de este módulo, debe importarlo</span>
+<span class="sd">previamente: ::</span>
+
+<span class="sd">    # reemplace ... por la función/clase que desea utilizar</span>
+<span class="sd">    from ccepy.cuerpos_finitos import ...</span>
+
+<span class="sd">Para operar con elementos de un cuerpo finito con q elementos, use la función</span>
+<span class="sd">:func:`Fq` y los operadores aritméticos habituales.</span>
+
+<span class="sd">    &gt;&gt;&gt; F16 = Fq(2, 4)</span>
+<span class="sd">    &gt;&gt;&gt; F16([1, 1, 0, 1]) + F16([1, 0, 0, 1])</span>
+<span class="sd">    {[0, 1, 0, 0]; 16}</span>
+<span class="sd">    &gt;&gt;&gt; F16([1, 0, 1, 1]) * F16([1, 0, 0, 1])</span>
+<span class="sd">    {[1, 0, 0, 0]; 16}</span>
+<span class="sd">    &gt;&gt;&gt; F16([1, 1, 0, 1]) ** (-1)</span>
+<span class="sd">    {[0, 1, 0, 1]; 16}</span>
+<span class="sd">    &gt;&gt;&gt; F16([0, 0, 1, 0]) ** 2</span>
+<span class="sd">    {[1, 0, 0, 1]; 16}</span>
+
+<span class="sd">Se está utilizando la representación polinomial para los elementos de un</span>
+<span class="sd">cuerpo finito. En particular, para la creación y la representación de</span>
+<span class="sd">un elemento se utilizan los coeficientes del elemento visto como polinomio.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="kn">from</span> <span class="nn">ccepy.aritmetica_elemental</span> <span class="kn">import</span> <span class="n">Zp</span><span class="p">,</span> <span class="n">PolinomioZp</span><span class="p">,</span> <span class="n">alg_euclides_polinomios</span>
+
+
+<span class="c1"># TODO: explicar en algun lado esto</span>
+<span class="nd">@functools.lru_cache</span><span class="p">()</span>
+<div class="viewcode-block" id="Fq"><a class="viewcode-back" href="../cuerpos_finitos.html#cuerpos_finitos.Fq">[documentos]</a><span class="k">def</span> <span class="nf">Fq</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Devuelve el constructor de elementos del cuerpo finito con p**n elementos.</span>
+
+<span class="sd">        &gt;&gt;&gt; F16 = Fq(2, 4)</span>
+<span class="sd">        &gt;&gt;&gt; F16</span>
+<span class="sd">        &lt;class &#39;ccepy.cuerpos_finitos.Fq.&lt;locals&gt;.ElementoFq&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; F16([0, 0, 0, 0, 1])</span>
+<span class="sd">        {[1, 0, 0, 1]; 16}</span>
+
+<span class="sd">    Se puede espeficiar el polinomio con el cual se hace módulo:</span>
+
+<span class="sd">        &gt;&gt;&gt; pol_irreducible = PolinomioZp([1, 1, 1, 0, 1], p=2)</span>
+<span class="sd">        &gt;&gt;&gt; pol_irreducible</span>
+<span class="sd">        X^4 + X^2 + X + 1</span>
+<span class="sd">        &gt;&gt;&gt; F16 = Fq(2, 4, pol_irreducible)</span>
+<span class="sd">        &gt;&gt;&gt; F16([0, 0, 0, 0, 1])  # X^4 mod X^4 + X^2 + X + 1</span>
+<span class="sd">        {[1, 1, 1, 0]; 16}</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        p (int): un número primo.</span>
+<span class="sd">        n (Optional[int]): un número natural.</span>
+<span class="sd">        pol_irreducible (Optional[PolinomioZp]): un polinomio de grado</span>
+<span class="sd">            *n* irreducible.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        Si n es uno, devuelve :class:`.EnteroModuloP`.</span>
+
+<span class="sd">        Si n es mayor que uno, devuelve :class:`ElementoFq`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Zp</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">ElementoFq</span><span class="p">(</span><span class="n">PolinomioZp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Representa un elemento del cuerpo finito con q elementos.</span>
+
+<span class="sd">            &gt;&gt;&gt; F16 = Fq(2, 4)</span>
+<span class="sd">            &gt;&gt;&gt; p, q = F16([1, 1, 0, 1]), F16([1, 0, 0, 1])</span>
+<span class="sd">            &gt;&gt;&gt; type(p)</span>
+<span class="sd">            &lt;class &#39;ccepy.cuerpos_finitos.Fq.&lt;locals&gt;.ElementoFq&#39;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; p</span>
+<span class="sd">            {[1, 1, 0, 1]; 16}</span>
+<span class="sd">            &gt;&gt;&gt; q</span>
+<span class="sd">            {[1, 0, 0, 1]; 16}</span>
+<span class="sd">            &gt;&gt;&gt; p + q</span>
+<span class="sd">            {[0, 1, 0, 0]; 16}</span>
+<span class="sd">            &gt;&gt;&gt; p * q</span>
+<span class="sd">            {[1, 0, 1, 0]; 16}</span>
+<span class="sd">            &gt;&gt;&gt; p ** (-1)</span>
+<span class="sd">            {[0, 1, 0, 1]; 16}</span>
+
+<span class="sd">        Soporta los operadores ``+``, ``-``, ``*``, ``/`` y ``**`` con su</span>
+<span class="sd">        significado habitual.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            coeficientes (List[int]): los coeficientes del elemento visto</span>
+<span class="sd">                como polinomio.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            Zp (EnteroModuloP): el constructor de enteros módulo un primo p.</span>
+<span class="sd">                (*atributo de clase*)</span>
+<span class="sd">            p (int): el primo p. (*atributo de clase*)</span>
+<span class="sd">            n (int): el grado del irreducible *pol_irreducible*.</span>
+<span class="sd">                (*atributo de clase*)</span>
+<span class="sd">            q (int): el número de elementos del cuerpo finito.</span>
+<span class="sd">                (*atributo de clase*)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Zp</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">pol_irreducible</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">cero</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Devuelve el cero del cuerpo finito.</span>
+
+<span class="sd">            Return:</span>
+<span class="sd">                ElementoFq: el cero.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">uno</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Devuelve el uno del cuerpo finito.</span>
+
+<span class="sd">            Return:</span>
+<span class="sd">                ElementoFq: el uno.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeficientes</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># probamos a ver si coeficientes es del tipo PolinomioZp</span>
+                <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="c1"># es una lista de int</span>
+                <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">coeficientes_nuevos</span> <span class="o">=</span> <span class="p">(</span><span class="n">pol</span> <span class="o">%</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">pol_irreducible</span><span class="p">)</span><span class="o">.</span><span class="n">coeficientes</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">coeficientes_nuevos</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">ElementoFq</span><span class="p">(</span><span class="n">alfa</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__add__</span><span class="p">(</span><span class="n">alfa</span><span class="p">))</span>
+
+        <span class="n">__radd__</span> <span class="o">=</span> <span class="n">__add__</span>
+
+        <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__neg__</span><span class="p">())</span>
+
+        <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="bp">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">alfa</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub__</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">alfa</span><span class="p">))</span>
+
+        <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
+
+        <span class="c1"># TODO: añadir ref al square-and-multiply del Handbook</span>
+        <span class="c1"># TODO: ver que pasa cuando k &gt;  p^m -1</span>
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">_exponenciacion_binaria</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Calcula la potencia k-ésima del elemento g eficientemente.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                g (ElementoFq): un elemento del cuerpo finito.</span>
+<span class="sd">                k (int): un exponente natural entre el 0 y q-2 (ambos inclusive).</span>
+
+<span class="sd">            Return:</span>
+<span class="sd">                ElementoFq: la potencia k-ésima del elemento g.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">rep_binaria_k</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">k</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]))</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rep_binaria_k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+            <span class="n">s</span> <span class="o">=</span> <span class="n">ElementoFq</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">s</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rep_binaria_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">G</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">G</span>
+                <span class="k">if</span> <span class="n">rep_binaria_k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">s</span>
+            <span class="k">return</span> <span class="n">s</span>
+
+        <span class="c1"># TODO: es cierto que g^q == g^1 para cualquier g en ElementoFq? (para el 0 no)</span>
+        <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">cero</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">uno</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+
+            <span class="n">q</span> <span class="o">=</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">q</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">inverso</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">_exponenciacion_binaria</span><span class="p">(</span><span class="n">inverso</span><span class="p">,</span> <span class="o">-</span><span class="n">k</span> <span class="o">%</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">_exponenciacion_binaria</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span> <span class="o">%</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">inverso</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Devuelve el inverso del elemento del cuerpo finito.</span>
+
+<span class="sd">                &gt;&gt;&gt; F16 = Fq(2, 4)</span>
+<span class="sd">                &gt;&gt;&gt; F16([1, 1, 0, 1]).inverso()</span>
+<span class="sd">                {[0, 1, 0, 1]; 16}</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                ElementoFq: el inverso.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">cero</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ZeroDivisionError</span>
+
+            <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">alg_euclides_polinomios</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">pol_irreducible</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span><span class="o">.</span><span class="n">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">tope</span> <span class="o">=</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">)</span>
+            <span class="n">coeficientes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tope</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="s2">&quot;{{{0}; {1}}}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="n">__repr__</span> <span class="o">=</span> <span class="n">__str__</span>
+
+    <span class="n">ElementoFq</span><span class="o">.</span><span class="n">Zp</span> <span class="o">=</span> <span class="n">Zp</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="n">ElementoFq</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+    <span class="n">ElementoFq</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="n">p</span> <span class="o">**</span> <span class="n">n</span>
+    <span class="k">if</span> <span class="n">pol_irreducible</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">pol_irreducible</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="o">.</span><span class="n">genera_irreducible</span><span class="p">(</span><span class="n">grado</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">ElementoFq</span><span class="o">.</span><span class="n">pol_irreducible</span> <span class="o">=</span> <span class="n">pol_irreducible</span>
+    <span class="n">ElementoFq</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="s2">&quot;F{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">**</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ElementoFq</span></div>
+
+
+<div class="viewcode-block" id="ElementoFq"><a class="viewcode-back" href="../cuerpos_finitos.html#cuerpos_finitos.ElementoFq">[documentos]</a><span class="k">class</span> <span class="nc">ElementoFq</span><span class="p">(</span><span class="n">PolinomioZp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representa un elemento del cuerpo finito con q elementos.</span>
+
+<span class="sd">        &gt;&gt;&gt; F16 = Fq(2, 4)</span>
+<span class="sd">        &gt;&gt;&gt; p, q = F16([1, 1, 0, 1]), F16([1, 0, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; type(p)</span>
+<span class="sd">        &lt;class &#39;ccepy.cuerpos_finitos.Fq.&lt;locals&gt;.ElementoFq&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; p</span>
+<span class="sd">        {[1, 1, 0, 1]; 16}</span>
+<span class="sd">        &gt;&gt;&gt; q</span>
+<span class="sd">        {[1, 0, 0, 1]; 16}</span>
+<span class="sd">        &gt;&gt;&gt; p + q</span>
+<span class="sd">        {[0, 1, 0, 0]; 16}</span>
+<span class="sd">        &gt;&gt;&gt; p * q</span>
+<span class="sd">        {[1, 0, 1, 0]; 16}</span>
+<span class="sd">        &gt;&gt;&gt; p ** (-1)</span>
+<span class="sd">        {[0, 1, 0, 1]; 16}</span>
+
+<span class="sd">    Soporta los operadores ``+``, ``-``, ``*``, ``/`` y ``**`` con su</span>
+<span class="sd">    significado habitual.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        coeficientes (List[int]): los coeficientes del elemento visto</span>
+<span class="sd">            como polinomio.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        Zp (EnteroModuloP): el constructor de enteros módulo un primo p.</span>
+<span class="sd">            (*atributo de clase*)</span>
+<span class="sd">        p (int): el primo p. (*atributo de clase*)</span>
+<span class="sd">        n (int): el grado del irreducible *pol_irreducible*.</span>
+<span class="sd">            (*atributo de clase*)</span>
+<span class="sd">        q (int): el número de elementos del cuerpo finito.</span>
+<span class="sd">            (*atributo de clase*)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Zp</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">pol_irreducible</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ElementoFq.cero"><a class="viewcode-back" href="../cuerpos_finitos.html#cuerpos_finitos.ElementoFq.cero">[documentos]</a>    <span class="k">def</span> <span class="nf">cero</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el cero del cuerpo finito.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            ElementoFq: el cero.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span></div>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ElementoFq.uno"><a class="viewcode-back" href="../cuerpos_finitos.html#cuerpos_finitos.ElementoFq.uno">[documentos]</a>    <span class="k">def</span> <span class="nf">uno</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el uno del cuerpo finito.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            ElementoFq: el uno.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeficientes</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># probamos a ver si coeficientes es del tipo PolinomioZp</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c1"># es una lista de int</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">coeficientes_nuevos</span> <span class="o">=</span> <span class="p">(</span><span class="n">pol</span> <span class="o">%</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">pol_irreducible</span><span class="p">)</span><span class="o">.</span><span class="n">coeficientes</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">coeficientes_nuevos</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">ElementoFq</span><span class="p">(</span><span class="n">alfa</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__add__</span><span class="p">(</span><span class="n">alfa</span><span class="p">))</span>
+
+    <span class="n">__radd__</span> <span class="o">=</span> <span class="n">__add__</span>
+
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__neg__</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="bp">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">alfa</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub__</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">alfa</span><span class="p">))</span>
+
+    <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
+
+    <span class="c1"># TODO: añadir ref al square-and-multiply del Handbook</span>
+    <span class="c1"># TODO: ver que pasa cuando k &gt;  p^m -1</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_exponenciacion_binaria</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calcula la potencia k-ésima del elemento g eficientemente.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g (ElementoFq): un elemento del cuerpo finito.</span>
+<span class="sd">            k (int): un exponente natural entre el 0 y q-2 (ambos inclusive).</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            ElementoFq: la potencia k-ésima del elemento g.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rep_binaria_k</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">k</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]))</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rep_binaria_k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ElementoFq</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">s</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rep_binaria_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">G</span>
+            <span class="k">if</span> <span class="n">rep_binaria_k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">s</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="c1"># TODO: es cierto que g^q == g^1 para cualquier g en ElementoFq? (para el 0 no)</span>
+    <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">cero</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">uno</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">q</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">inverso</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">_exponenciacion_binaria</span><span class="p">(</span><span class="n">inverso</span><span class="p">,</span> <span class="o">-</span><span class="n">k</span> <span class="o">%</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">_exponenciacion_binaria</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span> <span class="o">%</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ElementoFq.inverso"><a class="viewcode-back" href="../cuerpos_finitos.html#cuerpos_finitos.ElementoFq.inverso">[documentos]</a>    <span class="k">def</span> <span class="nf">inverso</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el inverso del elemento del cuerpo finito.</span>
+
+<span class="sd">            &gt;&gt;&gt; F16 = Fq(2, 4)</span>
+<span class="sd">            &gt;&gt;&gt; F16([1, 1, 0, 1]).inverso()</span>
+<span class="sd">            {[0, 1, 0, 1]; 16}</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ElementoFq: el inverso.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">cero</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ZeroDivisionError</span>
+
+        <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">alg_euclides_polinomios</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">pol_irreducible</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alfa</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">(</span><span class="n">alfa</span><span class="p">)</span><span class="o">.</span><span class="n">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tope</span> <span class="o">=</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">n</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">)</span>
+        <span class="n">coeficientes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tope</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="s2">&quot;{{{0}; {1}}}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="n">__repr__</span> <span class="o">=</span> <span class="n">__str__</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Adrian Ranea.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

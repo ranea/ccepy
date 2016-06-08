@@ -1,0 +1,848 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>aritmetica_elemental &mdash; documentación de ccepy - 0.0.1</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="documentación de ccepy - 0.0.1" href="../index.html"/>
+        <link rel="up" title="Código de módulo" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ccepy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Primeros pasos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aritmetica_elemental.html">Aritmética elemental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cuerpos_finitos.html">Cuerpos finitos</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">ccepy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Código de módulo</a> &raquo;</li>
+      
+    <li>aritmetica_elemental</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Código fuente para aritmetica_elemental</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Aritmética elemental con enteros y polinomios.</span>
+
+<span class="sd">Este módulo permite operar con enteros módulo un primo p y polinomios</span>
+<span class="sd">cuyos coeficientes sean enteros módulo un primo p.</span>
+
+<span class="sd">Para utilizar las funciones y las clases de este módulo, debe importarlo</span>
+<span class="sd">previamente: ::</span>
+
+<span class="sd">    # reemplace ... por la función/clase que desea utilizar</span>
+<span class="sd">    from ccepy.aritmetica_elemental import ...</span>
+
+<span class="sd">Para operar con enteros módulo un primo p, use la función :func:`Zp` y</span>
+<span class="sd">los operadores aritméticos habituales.</span>
+
+<span class="sd">    &gt;&gt;&gt; Z7 = Zp(7)</span>
+<span class="sd">    &gt;&gt;&gt; n, m = Z7(2), Z7(6)</span>
+<span class="sd">    &gt;&gt;&gt; n</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; m</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; n + m</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; n * m</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; m ** (-1)</span>
+<span class="sd">    6</span>
+
+<span class="sd">Para operar con polinomios con coeficientes enteros módulo un primo p,</span>
+<span class="sd">use la función :func:`PolinomioZp` y los operadores aritméticos</span>
+<span class="sd">habituales.</span>
+
+<span class="sd">    &gt;&gt;&gt; f = PolinomioZp([0, 0, 1], p=2)</span>
+<span class="sd">    &gt;&gt;&gt; f</span>
+<span class="sd">    X^2</span>
+<span class="sd">    &gt;&gt;&gt; g = PolinomioZp([1, 1], p=2)</span>
+<span class="sd">    &gt;&gt;&gt; g</span>
+<span class="sd">    X + 1</span>
+<span class="sd">    &gt;&gt;&gt; f + g</span>
+<span class="sd">    X^2 + X + 1</span>
+<span class="sd">    &gt;&gt;&gt; f * g</span>
+<span class="sd">    X^3 + X^2</span>
+<span class="sd">    &gt;&gt;&gt; f ** 3</span>
+<span class="sd">    X^6</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+
+<span class="c1"># TODO: añadir referencia Handbook of applied cryptography?</span>
+<div class="viewcode-block" id="alg_euclides"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.alg_euclides">[documentos]</a><span class="k">def</span> <span class="nf">alg_euclides</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calcula el algoritmo extendido de Euclides para enteros.</span>
+
+<span class="sd">    Esto es, los (x, y, d) tal que :math:`a x + b y = d`, siendo d el máximo</span>
+<span class="sd">    común divisor de (a, b).</span>
+
+<span class="sd">        &gt;&gt;&gt; alg_euclides(54, 24)</span>
+<span class="sd">        (1, -2, 6)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a (int): un número positivo.</span>
+<span class="sd">        b (int): otro número positivo.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[int]: la lista [x, y, d].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">b</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">:</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">alg_euclides</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>  <span class="c1"># Intercambiamos x e y de lugar</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x2</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">b</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">q</span> <span class="o">*</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">q</span> <span class="o">*</span> <span class="n">y1</span>
+                <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">r</span>
+                <span class="n">x2</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y</span>
+            <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span></div>
+
+
+<span class="c1"># TODO: añadir referencia Handbook of applied cryptography?</span>
+<span class="c1"># TODO: eliminar debug</span>
+<div class="viewcode-block" id="alg_euclides_polinomios"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.alg_euclides_polinomios">[documentos]</a><span class="k">def</span> <span class="nf">alg_euclides_polinomios</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calcula el algoritmo extendido de Euclides para polinomios.</span>
+
+<span class="sd">    Esto es, los (s, t, d) tal que :math:`s g + t h = d`,</span>
+<span class="sd">    siendo d el máximo común divisor mónico de (s, g).</span>
+
+<span class="sd">        &gt;&gt;&gt; f = PolinomioZp([0, 0, 0, 1], p=2)</span>
+<span class="sd">        &gt;&gt;&gt; f</span>
+<span class="sd">        X^3</span>
+<span class="sd">        &gt;&gt;&gt; g = PolinomioZp([1, 0, 1, 1], p=2)</span>
+<span class="sd">        &gt;&gt;&gt; g</span>
+<span class="sd">        X^3 + X^2 + 1</span>
+<span class="sd">        &gt;&gt;&gt; alg_euclides_polinomios(f, g, p=2)</span>
+<span class="sd">        (X^2 + X + 1, X^2 + 1, 1)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        g (PolinomioZp): un polinomio no nulo con coeficientes enteros</span>
+<span class="sd">            módulo p.</span>
+<span class="sd">        h (PolinomioZp): otro polinomio con coeficientes enteros módulo p.</span>
+<span class="sd">        p (int): el primo p.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[PolinomioZp]: la lista [s, t, d].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gg</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">hh</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">cero</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">uno</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">)</span>
+    <span class="c1"># print(&quot;&gt;&gt;&gt; INICIO ALG_EU\n\tg: {0}\n\th: {1}&quot;.format(gg, hh))</span>
+    <span class="k">if</span> <span class="n">hh</span> <span class="o">==</span> <span class="n">cero</span><span class="p">:</span>
+        <span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">gg</span><span class="p">,</span> <span class="n">uno</span><span class="p">,</span> <span class="n">cero</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t1</span> <span class="o">=</span> <span class="n">uno</span><span class="p">,</span> <span class="n">cero</span><span class="p">,</span> <span class="n">cero</span><span class="p">,</span> <span class="n">uno</span>
+        <span class="k">while</span> <span class="n">hh</span> <span class="o">!=</span> <span class="n">cero</span><span class="p">:</span>
+            <span class="c1"># print(&quot;&gt;&gt;&gt; DIVISION ENTRE \n\tgg: {0}\n\thh: {1}&quot;.format(gg, hh))</span>
+            <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">gg</span><span class="p">,</span> <span class="n">hh</span><span class="p">)</span>
+            <span class="c1"># print(&quot;&gt;&gt;&gt; FIN DIVISION \n\tq: {0}\n\tr: {1}&quot;.format(q, r))</span>
+            <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">s2</span> <span class="o">-</span> <span class="n">q</span> <span class="o">*</span> <span class="n">s1</span><span class="p">,</span> <span class="n">t2</span> <span class="o">-</span> <span class="n">q</span> <span class="o">*</span> <span class="n">t1</span>
+            <span class="n">gg</span><span class="p">,</span> <span class="n">hh</span> <span class="o">=</span> <span class="n">hh</span><span class="p">,</span> <span class="n">r</span>
+            <span class="n">s2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t1</span> <span class="o">=</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t</span>
+        <span class="n">d</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">gg</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">t2</span>
+    <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">coeficiente_lider</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">Z_p</span> <span class="o">=</span> <span class="n">Zp</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">inverso</span> <span class="o">=</span> <span class="n">Z_p</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">coeficiente_lider</span><span class="p">())</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="n">inverso</span><span class="p">],</span> <span class="n">p</span><span class="p">)</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">s</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span> <span class="o">*</span> <span class="n">k</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span></div>
+
+
+<span class="c1"># TODO: explicar en algun lado esto</span>
+<span class="nd">@functools.lru_cache</span><span class="p">()</span>
+<div class="viewcode-block" id="Zp"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.Zp">[documentos]</a><span class="k">def</span> <span class="nf">Zp</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="c1"># No documentar aquí la clase</span>
+    <span class="sd">&quot;&quot;&quot;Devuelve el constructor de enteros módulo un primo p.</span>
+
+<span class="sd">        &gt;&gt;&gt; Z2 = Zp(2)</span>
+<span class="sd">        &gt;&gt;&gt; Z2</span>
+<span class="sd">        &lt;class &#39;ccepy.aritmetica_elemental.Zp.&lt;locals&gt;.EnteroModuloP&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; Z2(11)  # 11 mod 2</span>
+<span class="sd">        1</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        p (int): un número primo.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        EnteroModuloP: la clase que representa los enteros módulo un primo p.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">EnteroModuloP</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Representa un entero módulo un primo p.</span>
+
+<span class="sd">            &gt;&gt;&gt; Z7 = Zp(7)</span>
+<span class="sd">            &gt;&gt;&gt; n, m = Z7(2), Z7(6)</span>
+<span class="sd">            &gt;&gt;&gt; type(n)</span>
+<span class="sd">            &lt;class &#39;ccepy.aritmetica_elemental.Zp.&lt;locals&gt;.EnteroModuloP&#39;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; n</span>
+<span class="sd">            2</span>
+<span class="sd">            &gt;&gt;&gt; m</span>
+<span class="sd">            6</span>
+<span class="sd">            &gt;&gt;&gt; n + m</span>
+<span class="sd">            1</span>
+<span class="sd">            &gt;&gt;&gt; n * m</span>
+<span class="sd">            5</span>
+<span class="sd">            &gt;&gt;&gt; m ** (-1)</span>
+<span class="sd">            6</span>
+
+<span class="sd">        Soporta los operadores ``+``, ``-``, ``*``, ``/`` y ``**`` con su</span>
+<span class="sd">        significado habitual.</span>
+
+<span class="sd">        Los operandos pueden ser ambos de tipo :class:`EnteroModuloP` o bien uno</span>
+<span class="sd">        de tipo :class:`EnteroModuloP` y otro de tipo :py:class:`int`. En ambos</span>
+<span class="sd">        casos el resultado será de tipo :class:`EnteroModuloP`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entero (int): el valor del entero.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            p (int): el primo p (*atributo de clase*).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Instancie usando la función Zp()&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">entero</span> <span class="o">%</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">EnteroModuloP</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__add__</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+        <span class="n">__radd__</span> <span class="o">=</span> <span class="n">__add__</span>
+
+        <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__neg__</span><span class="p">())</span>
+
+        <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="bp">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">m</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub__</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+        <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
+
+        <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">inverso</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">inverso</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="n">m</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__pow__</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">inverso</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Devuelve el inverso módulo p.</span>
+
+<span class="sd">                &gt;&gt;&gt; Z7 = Zp(7)</span>
+<span class="sd">                &gt;&gt;&gt; Z7(6).inverso()</span>
+<span class="sd">                6</span>
+
+<span class="sd">            Return:</span>
+<span class="sd">                EnteroModuloP: el inverso.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ZeroDivisionError</span>
+
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">alg_euclides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># para functools</span>
+        <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__hash__</span><span class="p">()</span>
+
+    <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="s2">&quot;Z{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">EnteroModuloP</span></div>
+
+
+<div class="viewcode-block" id="EnteroModuloP"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP">[documentos]</a><span class="k">class</span> <span class="nc">EnteroModuloP</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representa un entero módulo un primo p.</span>
+
+<span class="sd">        &gt;&gt;&gt; Z7 = Zp(7)</span>
+<span class="sd">        &gt;&gt;&gt; n, m = Z7(2), Z7(6)</span>
+<span class="sd">        &gt;&gt;&gt; type(n)</span>
+<span class="sd">        &lt;class &#39;ccepy.aritmetica_elemental.Zp.&lt;locals&gt;.EnteroModuloP&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; n</span>
+<span class="sd">        2</span>
+<span class="sd">        &gt;&gt;&gt; m</span>
+<span class="sd">        6</span>
+<span class="sd">        &gt;&gt;&gt; n + m</span>
+<span class="sd">        1</span>
+<span class="sd">        &gt;&gt;&gt; n * m</span>
+<span class="sd">        5</span>
+<span class="sd">        &gt;&gt;&gt; m ** (-1)</span>
+<span class="sd">        6</span>
+
+<span class="sd">    Soporta los operadores ``+``, ``-``, ``*``, ``/`` y ``**`` con su</span>
+<span class="sd">    significado habitual.</span>
+
+<span class="sd">    Los operandos pueden ser ambos de tipo :class:`EnteroModuloP` o bien uno</span>
+<span class="sd">    de tipo :class:`EnteroModuloP` y otro de tipo :py:class:`int`. En ambos</span>
+<span class="sd">    casos el resultado será de tipo :class:`EnteroModuloP`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entero (int): el valor del entero.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        p (int): el primo p (*atributo de clase*).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Instancie usando la función Zp()&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">entero</span> <span class="o">%</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="c1"># TODO: borrar este método al copiarlo dentro de Zp()</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">EnteroModuloP</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__add__</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="n">__radd__</span> <span class="o">=</span> <span class="n">__add__</span>
+
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__neg__</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="bp">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub__</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__mul__</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+    <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
+
+    <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">inverso</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">inverso</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__pow__</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span><span class="p">))</span>
+
+<div class="viewcode-block" id="EnteroModuloP.inverso"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP.inverso">[documentos]</a>    <span class="k">def</span> <span class="nf">inverso</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el inverso módulo p.</span>
+
+<span class="sd">            &gt;&gt;&gt; Z7 = Zp(7)</span>
+<span class="sd">            &gt;&gt;&gt; Z7(6).inverso()</span>
+<span class="sd">            6</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            EnteroModuloP: el inverso.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ZeroDivisionError</span>
+
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">alg_euclides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="c1"># para functools</span>
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__hash__</span><span class="p">()</span></div>
+
+
+<span class="c1"># TODO: recompilar ejemplos</span>
+<div class="viewcode-block" id="PolinomioZp"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp">[documentos]</a><span class="k">class</span> <span class="nc">PolinomioZp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representa un polinomio con coeficientes enteros módulo un primo p.</span>
+
+<span class="sd">        &gt;&gt;&gt; f = PolinomioZp([0, 0, 1], p=2)</span>
+<span class="sd">        &gt;&gt;&gt; f</span>
+<span class="sd">        X^2</span>
+<span class="sd">        &gt;&gt;&gt; g = PolinomioZp([1, 1], p=2)</span>
+<span class="sd">        &gt;&gt;&gt; g</span>
+<span class="sd">        X + 1</span>
+<span class="sd">        &gt;&gt;&gt; f + g</span>
+<span class="sd">        X^2 + X + 1</span>
+<span class="sd">        &gt;&gt;&gt; f * g</span>
+<span class="sd">        X^3 + X^2</span>
+<span class="sd">        &gt;&gt;&gt; f ** 3</span>
+<span class="sd">        X^6</span>
+
+<span class="sd">    Soporta los operadores ``+``, ``-``, ``*``, ``/``, ``%`` y ``**`` con su</span>
+<span class="sd">    significado habitual.</span>
+
+<span class="sd">    Los operandos pueden ser ambos de tipo :class:`PolinomioZp` o bien uno de</span>
+<span class="sd">    tipo :class:`PolinomioZp` y otro de tipo :py:class:`int`. En ambos casos el</span>
+<span class="sd">    resultado será de tipo :class:`PolinomioZp`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        coeficientes (List[int]): los coeficientes del polinomio ordenados</span>
+<span class="sd">            de forma ascendente, esto es, el primero el término constante y</span>
+<span class="sd">            el último el coeficiente líder.</span>
+<span class="sd">        p (int): el primo p.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeficientes</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="c1"># Queremos que el último coeficiente no sea nulo</span>
+        <span class="c1"># (excepto si es el polinomio cero)</span>
+        <span class="n">Z_p</span> <span class="o">=</span> <span class="n">Zp</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">ultimo_coef</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">indice</span><span class="p">,</span> <span class="n">coef</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">Z_p</span><span class="p">(</span><span class="n">coef</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ultimo_coef</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">)</span> <span class="o">-</span> <span class="n">indice</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ultimo_coef</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coeficientes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Z_p</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coeficientes</span><span class="p">[:</span><span class="n">ultimo_coef</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coeficientes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List[EnteroModuloP]: los coeficientes del polinomio ordenados de</span>
+<span class="sd">        forma ascendente, esto es, el primero es el término constante y el</span>
+<span class="sd">        último el coeficiente líder. Es un atributo de solo lectura.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeficientes</span>
+
+<div class="viewcode-block" id="PolinomioZp.primo"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp.primo">[documentos]</a>    <span class="k">def</span> <span class="nf">primo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el primo p.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeficientes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">p</span></div>
+
+    <span class="c1"># TODO: eliminar tras debug</span>
+    <span class="c1"># @classmethod</span>
+    <span class="c1"># def cero(cls, p):</span>
+    <span class="c1">#     &quot;&quot;&quot;Devuelve el polinomio cero.&quot;&quot;&quot;</span>
+    <span class="c1">#     return cls([0], p)</span>
+    <span class="c1">#</span>
+    <span class="c1"># @classmethod</span>
+    <span class="c1"># def uno(cls):</span>
+    <span class="c1">#     &quot;&quot;&quot;Devuelve el polinomio constante uno.&quot;&quot;&quot;</span>
+    <span class="c1">#     return cls([1], p)</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PolinomioZp.monomio"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp.monomio">[documentos]</a>    <span class="k">def</span> <span class="nf">monomio</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">coef</span><span class="p">,</span> <span class="n">grado</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el mononomio con coeficiente *coef* y de grado *grado*.</span>
+
+<span class="sd">            &gt;&gt;&gt; PolinomioZp.monomio(-1, 7, 2)</span>
+<span class="sd">            X^7</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            coef (int): el coeficiente líder del monomio.</span>
+<span class="sd">            grado (int): el exponente del monomio.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PolinomioZp: el monomio con dicho coeficiente y grado.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">([</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grado</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="n">coef</span><span class="p">],</span> <span class="n">p</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PolinomioZp.grado"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp.grado">[documentos]</a>    <span class="k">def</span> <span class="nf">grado</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el grado del polinomio.</span>
+
+<span class="sd">            &gt;&gt;&gt; f = PolinomioZp([1, 0, 0, 1], p=2)</span>
+<span class="sd">            &gt;&gt;&gt; f</span>
+<span class="sd">            X^3 + 1</span>
+<span class="sd">            &gt;&gt;&gt; f.grado()</span>
+<span class="sd">            3</span>
+
+<span class="sd">        El grado puede ser:</span>
+
+<span class="sd">            * \- :py:data:`math.inf` : si el polinomio es el polinomio cero.</span>
+<span class="sd">            * ``n`` : si el término lider tiene exponente n.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: el grado del polinomio.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="PolinomioZp.coeficiente_lider"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp.coeficiente_lider">[documentos]</a>    <span class="k">def</span> <span class="nf">coeficiente_lider</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el coeficiente asociado al término de mayor exponente.</span>
+
+<span class="sd">            &gt;&gt;&gt; f = PolinomioZp([2, 0, 0, 1], p=3)</span>
+<span class="sd">            &gt;&gt;&gt; f</span>
+<span class="sd">            X^3 + 2</span>
+<span class="sd">            &gt;&gt;&gt; f.coeficiente_lider()</span>
+<span class="sd">            1</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            EnteroModuloP: el coeficiente asociado al mayor exponente.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+    <span class="c1"># TODO: Añadir referencia Handbook</span>
+    <span class="c1"># TODO: quitar debug</span>
+    <span class="c1"># TODO: añadir ejemplo</span>
+<div class="viewcode-block" id="PolinomioZp.es_irreducible"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp.es_irreducible">[documentos]</a>    <span class="k">def</span> <span class="nf">es_irreducible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Comprueba si el polinomio es irreducible.</span>
+
+<span class="sd">            &gt;&gt;&gt; f = PolinomioZp([1, 0, 1, 1], p=2)</span>
+<span class="sd">            &gt;&gt;&gt; f</span>
+<span class="sd">            X^3 + X^2 + 1</span>
+<span class="sd">            &gt;&gt;&gt; f.es_irreducible()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: verdadero o falso.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">()</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">coeficiente_lider</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">f</span> <span class="o">/</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">coeficiente_lider</span><span class="p">()],</span> <span class="n">p</span><span class="p">)</span>  <span class="c1"># lo hacemos mónico</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">grado</span><span class="p">()</span>
+
+        <span class="c1"># print(p, &quot;|&quot;, f, &quot;|&quot;, m)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="c1"># print(m // 2 + 1)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="n">u</span> <span class="o">**</span> <span class="n">p</span><span class="p">)</span> <span class="o">%</span> <span class="n">f</span>
+            <span class="c1"># print(&quot;...&quot;)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">alg_euclides_polinomios</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">u</span> <span class="o">-</span> <span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="c1"># print(u, &quot;|&quot;, f, &quot;|&quot;, u - x, &quot;|&quot;, d)</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span></div>
+
+    <span class="c1"># TODO: quitar debug</span>
+    <span class="c1"># TODO: añadir ejemplo</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PolinomioZp.genera_irreducible"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp.genera_irreducible">[documentos]</a>    <span class="k">def</span> <span class="nf">genera_irreducible</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">grado</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve un polinomio irreducible de dicho grado con coeficientes</span>
+<span class="sd">        módulo p.</span>
+
+<span class="sd">            &gt;&gt;&gt; f = PolinomioZp.genera_irreducible(3, 2)</span>
+<span class="sd">            &gt;&gt;&gt; f.es_irreducible()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PolinomioZp: el polinomio irreducible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Z_p</span> <span class="o">=</span> <span class="n">Zp</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">a_0</span> <span class="o">=</span> <span class="n">Z_p</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># lo queremos != 0</span>
+            <span class="n">a_m</span> <span class="o">=</span> <span class="n">Z_p</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">coeficientes</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_0</span><span class="p">]</span>
+            <span class="n">coeficientes</span> <span class="o">+=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">grado</span><span class="p">)]</span>
+            <span class="n">coeficientes</span> <span class="o">+=</span> <span class="p">[</span><span class="n">a_m</span><span class="p">]</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="c1"># print(f)</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">es_irreducible</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">f</span></div>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">PolinomioZp</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span> <span class="o">==</span> <span class="n">q</span><span class="o">.</span><span class="n">coeficientes</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Si el polinomio es una constante, hacemos</span>
+            <span class="c1"># la comparación con el coeficiente</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grado</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">q</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">PolinomioZp</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">zip_longest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span>
+                                                <span class="n">q</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span>
+                                                <span class="n">fillvalue</span><span class="o">=</span><span class="mi">0</span><span class="p">)],</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">coeficientes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">q</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">return</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">())</span>
+
+    <span class="n">__radd__</span> <span class="o">=</span> <span class="n">__add__</span>
+
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="o">-</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub__</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">PolinomioZp</span><span class="p">):</span>
+            <span class="n">cero</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">())</span>
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">cero</span> <span class="ow">or</span> <span class="n">q</span> <span class="o">==</span> <span class="n">cero</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">cero</span>
+
+            <span class="n">maximo_grado</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">)</span>
+            <span class="n">multiplicacion</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maximo_grado</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">):</span>
+                    <span class="n">multiplicacion</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+            <span class="k">return</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">multiplicacion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="n">a</span> <span class="o">*</span> <span class="n">q</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">())</span>
+
+    <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
+
+    <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">potencia</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">potencia</span> <span class="o">*=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">potencia</span>
+
+    <span class="k">def</span> <span class="nf">__divmod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="c1"># TODO: eliminar debug</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">()</span>
+        <span class="n">cero</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">())</span>
+        <span class="n">cociente</span><span class="p">,</span> <span class="n">divisor</span><span class="p">,</span> <span class="n">resto</span> <span class="o">=</span> <span class="n">cero</span><span class="p">,</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">q</span><span class="p">),</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># print(&quot;\nINICIO DIVISION\np: {0}\nq: {1}&quot;.format(self, q))</span>
+        <span class="c1"># print(&quot;cociente: {0}\ndivisor: {1}\nresto: {2}&quot;.format(cociente, divisor, resto))</span>
+        <span class="c1"># print(&quot;resto != 0: {0}\nresto.grado() &gt;= divisor.grado(): {1}\n&quot;.format(resto != cero, resto.grado() &gt;= divisor.grado()))</span>
+        <span class="k">while</span> <span class="n">resto</span> <span class="o">!=</span> <span class="n">cero</span> <span class="ow">and</span> <span class="n">resto</span><span class="o">.</span><span class="n">grado</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">divisor</span><span class="o">.</span><span class="n">grado</span><span class="p">():</span>
+            <span class="n">monomio_grado</span> <span class="o">=</span> <span class="n">resto</span><span class="o">.</span><span class="n">grado</span><span class="p">()</span> <span class="o">-</span> <span class="n">divisor</span><span class="o">.</span><span class="n">grado</span><span class="p">()</span>
+            <span class="n">monomio_cl</span> <span class="o">=</span> <span class="n">resto</span><span class="o">.</span><span class="n">coeficiente_lider</span><span class="p">()</span> <span class="o">/</span> <span class="n">divisor</span><span class="o">.</span><span class="n">coeficiente_lider</span><span class="p">()</span>
+            <span class="n">monomio_cociente</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="o">.</span><span class="n">monomio</span><span class="p">(</span><span class="n">monomio_cl</span><span class="p">,</span> <span class="n">monomio_grado</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="c1"># print(&quot;monomio_grado: {0}\nmonomio_coef_lider: {1}\nmonomio_cociente: {2}&quot;.format(monomio_grado, monomio_coef_lider, monomio_cociente))</span>
+
+            <span class="n">cociente</span> <span class="o">+=</span> <span class="n">monomio_cociente</span>
+            <span class="n">resto</span> <span class="o">-=</span> <span class="n">monomio_cociente</span> <span class="o">*</span> <span class="n">divisor</span>
+            <span class="c1"># print(&quot;cociente: {0}\nresto: {1}&quot;.format(cociente, resto))</span>
+            <span class="c1"># print(&quot;resto != cero: {0}\nresto.grado() &gt;= divisor.grado(): {1}\n&quot;.format(resto != cero, resto.grado() &gt;= divisor.grado()))</span>
+            <span class="c1"># input()</span>
+        <span class="k">return</span> <span class="n">cociente</span><span class="p">,</span> <span class="n">resto</span>
+
+    <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">divmod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__mod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grado</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">q</span><span class="o">.</span><span class="n">grado</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">divmod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">primo</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">monomios</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># Se imprime los monomios en orden descedente respecto al grado</span>
+            <span class="k">for</span> <span class="n">indice</span><span class="p">,</span> <span class="n">coef</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">coef</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">exponente</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">)</span> <span class="o">-</span> <span class="n">indice</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="c1"># La siguiente casuística es para evitar 1*X^1</span>
+                    <span class="c1"># en lugar de X y casos similares</span>
+                    <span class="k">if</span> <span class="n">exponente</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">monomios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">coef</span><span class="p">))</span>
+                    <span class="k">elif</span> <span class="n">exponente</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">coef</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">monomios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">monomios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;{0}*X&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coef</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">coef</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">monomios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;X^{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">exponente</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">monomios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;{0}*X^{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coef</span><span class="p">,</span> <span class="n">exponente</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s1">&#39; + &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">monomios</span><span class="p">)</span>
+
+    <span class="n">__repr__</span> <span class="o">=</span> <span class="n">__str__</span>
+
+    <span class="c1"># para functools.lru_cache de Fq</span>
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Adrian Ranea.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
