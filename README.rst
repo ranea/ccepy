@@ -1,4 +1,4 @@
-Criptografía con Curvas Elípticas con Python (ccepy)
-====================================================
+Criptografía con Curvas Elípticas con Python
+============================================
 
-README del projecto.
+Este README será completado una vez termine la implementación del programa y su documentación.
