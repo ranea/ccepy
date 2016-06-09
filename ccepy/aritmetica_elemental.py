@@ -354,7 +354,7 @@ class EnteroModuloP(int):
 
 
 # TODO: recompilar ejemplos
-class PolinomioZp(object):
+class PolinomioZp:
     """Representa un polinomio con coeficientes enteros módulo un primo p.
 
         >>> f = PolinomioZp([0, 0, 1], p=2)
