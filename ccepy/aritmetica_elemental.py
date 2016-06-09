@@ -184,6 +184,24 @@ def Zp(p):
         """
         p = None
 
+        @classmethod
+        def cero(cls):
+            """Devuelve el cero.
+
+            Return:
+                EnteroModuloP: el cero.
+            """
+            return EnteroModuloP(0)
+
+        @classmethod
+        def uno(cls):
+            """Devuelve el uno.
+
+            Return:
+                EnteroModuloP: el uno.
+            """
+            return EnteroModuloP(1)
+
         def __new__(cls, entero):
             if EnteroModuloP.p is None:
                 raise RuntimeError("Instancie usando la función Zp()")
@@ -284,6 +302,24 @@ class EnteroModuloP(int):
         p (int): el primo p (*atributo de clase*).
     """
     p = None
+
+    @classmethod
+    def cero(cls):
+        """Devuelve el cero.
+
+        Return:
+            EnteroModuloP: el cero.
+        """
+        return EnteroModuloP(0)
+
+    @classmethod
+    def uno(cls):
+        """Devuelve el uno.
+
+        Return:
+            EnteroModuloP: el uno.
+        """
+        return EnteroModuloP(1)
 
     def __new__(cls, entero):
         if EnteroModuloP.p is None:
