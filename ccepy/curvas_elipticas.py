@@ -15,9 +15,16 @@ class PuntosRacionales(metaclass=ABCMeta):
     """..."""
     __slots__ = ('_x', '_y')  # para mejorar la eficiencia si hay muchos objetos
 
+    @classmethod
+    @abstractmethod
+    def contiene(cls, x, y):
+        """Comprueba si (x,y) esta en la curva."""
+        return
+
     @abstractmethod
     def __init__(self, x, y):
         """Inicializa self._x y self._y."""
+        return
 
     def es_elemento_neutro(self):
         return self._x is None or self._y is None
@@ -97,8 +104,8 @@ def curva_eliptica_sobre_Q(a, b):
                     self._x = Fraction(x)  # para aceptar también int
                     self._y = Fraction(y)
                 else:
-                    raise ValueError("El punto ({0}, {1}) no pertenece a la" +
-                                    " curva".format(x, y))
+                    raise ValueError("El punto ({0}, {1})".format(x, y) +
+                                    " no pertenece a la curva.")
 
         def __eq__(self, other):
             if self.es_elemento_neutro():
@@ -136,7 +143,10 @@ def curva_eliptica_sobre_Q(a, b):
                 return PuntosQRacionales(x3, y3)
 
         def __neg__(self):
-            return PuntosQRacionales(self.x, -self.y)
+            if self.es_elemento_neutro():
+                return self
+            else:
+                return PuntosQRacionales(self.x, -self.y)
 
         def __mul__(self, entero):
             producto = PuntosQRacionales.elemento_neutro()  # una copia
@@ -178,8 +188,8 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
                 self._x = PuntosFqRacionales.Fq(x)
                 self._y = PuntosFqRacionales.Fq(y)
                 if not PuntosFqRacionales.contiene(self._x, self._y):
-                    raise ValueError("El punto ({0}, {1}) no pertenece a la" +
-                                    " curva".format(x, y))
+                    raise ValueError("El punto ({0}, {1})".format(x, y) +
+                                    " no pertenece a la curva.")
 
         def __eq__(self, other):
             if self.es_elemento_neutro():
@@ -198,17 +208,14 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
             x1, y1 = self.x, self.y
             x2, y2 = other.x, other.y
             a = PuntosFqRacionales.coeficientes.a
-            E = PuntosFqRacionales
+            Fq = PuntosFqRacionales.Fq
 
             if self == other:
-                if y1 == E.Fq.cero():
+                if y1 == Fq(0):
                     return PuntosFqRacionales.elemento_neutro()
                 else:
-                    # TODO: pensar como solucionar
-                    Fq_3 = E.Fq.uno() + E.Fq.uno() + E.Fq.uno()
-                    Fq_2 = E.Fq.uno() + E.Fq.uno()
-                    m = (Fq_3 * x1**2 + a) / (Fq_2 * y1)
-                    x3 = m**2 - Fq_2 * x1
+                    m = (Fq(3) * x1**2 + a) / (Fq(2) * y1)
+                    x3 = m**2 - Fq(2) * x1
                     y3 = m * (x1 - x3) - y1
                     return PuntosFqRacionales(x3, y3)
             elif x1 == x2:
@@ -221,7 +228,10 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
                 return PuntosFqRacionales(x3, y3)
 
         def __neg__(self):
-            return PuntosFqRacionales(self.x, -self.y)
+            if self.es_elemento_neutro():
+                return self
+            else:
+                return PuntosFqRacionales(self.x, -self.y)
 
         # añadir referencia (adaptación del handbook)
         @classmethod
@@ -253,15 +263,9 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
         raise ValueError("p no puede ser ni 2 ni 3.")
 
     F_q = Fq(p, n, pol_irreducible)
-    if n == 1:
-        A = F_q(a)
-        B = F_q(b)
-        discriminante = 4 * A**3 + 27 * B**2
-    else:
-        # n > 2
-        A = F_q([a])
-        B = F_q([b])
-        discriminante = F_q([4]) * A**3 + F_q([27]) * B**2
+    A = F_q(a)
+    B = F_q(b)
+    discriminante = F_q(4) * A**3 + F_q(27) * B**2
     if discriminante == F_q.cero():
         raise ValueError("El discriminant, 4a^3 + 27b^2, no puede ser cero.")
 

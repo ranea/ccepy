@@ -125,12 +125,14 @@ def Fq(p, n=1, pol_irreducible=None):
             return ElementoFq([1])
 
         def __init__(self, coeficientes):
-            try:
-                # probamos a ver si coeficientes es del tipo PolinomioZp
-                pol = PolinomioZp(coeficientes.coeficientes, ElementoFq.p)
-            except AttributeError:
-                # es una lista de int
+            if isinstance(coeficientes, int):
+                pol = PolinomioZp([coeficientes], ElementoFq.p)
+            elif isinstance(coeficientes, list):
                 pol = PolinomioZp(coeficientes, ElementoFq.p)
+            else:
+                # PolinomioZp o ElementoFq
+                pol = coeficientes
+
             coeficientes_nuevos = (pol % ElementoFq.pol_irreducible).coeficientes
             super().__init__(coeficientes_nuevos, ElementoFq.p)
 
@@ -239,6 +241,7 @@ def Fq(p, n=1, pol_irreducible=None):
     return ElementoFq
 
 
+# TODO: remover clase tras realizar documentación
 class ElementoFq(PolinomioZp):
     """Representa un elemento del cuerpo finito con q elementos.
 
@@ -297,12 +300,14 @@ class ElementoFq(PolinomioZp):
         return ElementoFq([1])
 
     def __init__(self, coeficientes):
-        try:
-            # probamos a ver si coeficientes es del tipo PolinomioZp
-            pol = PolinomioZp(coeficientes.coeficientes, ElementoFq.p)
-        except AttributeError:
-            # es una lista de int
+        if isinstance(coeficientes, int):
+            pol = PolinomioZp([coeficientes], ElementoFq.p)
+        elif isinstance(coeficientes, list):
             pol = PolinomioZp(coeficientes, ElementoFq.p)
+        else:
+            # PolinomioZp o ElementoFq
+            pol = coeficientes
+
         coeficientes_nuevos = (pol % ElementoFq.pol_irreducible).coeficientes
         super().__init__(coeficientes_nuevos, ElementoFq.p)
 

@@ -270,6 +270,7 @@ def Zp(p):
     return EnteroModuloP
 
 
+# TODO: remover clase tras realizar documentación
 class EnteroModuloP(int):
     """Representa un entero módulo un primo p.
 
