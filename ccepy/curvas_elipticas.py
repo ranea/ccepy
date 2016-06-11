@@ -254,6 +254,8 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
         def __mul__(self, entero):
             if self.es_elemento_neutro():
                 return self
+            elif entero < 0:
+                return PuntosFqRacionales._multiplicacion_por_duplicacion(-self, -entero)
             else:
                 return PuntosFqRacionales._multiplicacion_por_duplicacion(self, entero)
 

@@ -7,7 +7,6 @@ from collections import namedtuple
 from hypothesis import given, assume  # , settings
 from hypothesis.strategies import integers, sampled_from
 
-# from ccepy import cuerpos_finitos
 from ccepy.curvas_elipticas import curva_eliptica_sobre_Fq
 from ccepy.cuerpos_finitos import Fq
 
@@ -95,13 +94,13 @@ class TestCurvaElipticaFq(unittest.TestCase):
     """Conjuto de test para PuntosFqRacionales"""
     @given(sampled_from(curvas_eliptipcas_famosas), integers(), integers(), integers())
     def test_propiedades_grupo(self, ce, k1, k2, k3):
-        E = curva_eliptica_sobre_Fq(ce.a, ce.b, ce.p)
-        generador = E(ce.x1, ce.y1)
-        print(ce.nombre)
-
         assume(k1 >= 0)
         assume(k2 >= 0)
         assume(k3 >= 0)
+
+        E = curva_eliptica_sobre_Fq(ce.a, ce.b, ce.p)
+        generador = E(ce.x1, ce.y1)
+        print(ce.nombre)
 
         P = generador * k1
         Q = generador * k2
@@ -121,6 +120,29 @@ class TestCurvaElipticaFq(unittest.TestCase):
         # print("contiene?:", E.contiene(x1, y1))
         # P = E(x1, y1)
         # print("P:", P)
+
+    @given(sampled_from(curvas_eliptipcas_famosas), integers(), integers(min_value=-100, max_value=100))
+    def test_multiplicacion_por_duplicacion(self, ce, k, e):
+        assume(k >= 0)
+        assume(e)
+
+        E = curva_eliptica_sobre_Fq(ce.a, ce.b, ce.p)
+        generador = E(ce.x1, ce.y1)
+        print(ce.nombre)
+
+        P = generador * k
+
+        multiplicacion = E.elemento_neutro()
+        if e < 0:
+            for i in range(-e):
+                multiplicacion += -P
+        elif e > 0:
+            for i in range(e):
+                multiplicacion += P
+
+        print("\tP: {0}\n\tP': {1}".format(P, multiplicacion))
+        assert P * e == multiplicacion
+
 
 if __name__ == '__main__':
     # TODO: añadirlo al doctest (añadir tb una curva famosa)
