@@ -7,7 +7,7 @@ from collections import namedtuple
 from hypothesis import given, assume  # , settings
 from hypothesis.strategies import integers, sampled_from
 
-from ccepy.curvas_elipticas import curva_eliptica_sobre_Fq
+from ccepy.curvas_elipticas import curva_eliptica_sobre_Fq, curva_eliptica_sobre_Q
 from ccepy.cuerpos_finitos import Fq
 
 ParametrosCurvaEliptica = namedtuple('CurvaElíptica', ['nombre', 'p', 'a', 'b', 'x1', 'y1'])
@@ -177,13 +177,14 @@ if __name__ == '__main__':
     # print("Q =", Q)
     # print("P + Q =", P + Q)
 
-    # E = curva_eliptica_sobre_Fq(1, 1, 5, 2)
-    # print(E.coeficientes)
-    # print("Discriminante:", E.discriminante)
-    # F25 = Fq(5, 2)
-    # P = E(F25.cero(), F25.uno())
-    # print("P =", P)
-    # print("-P =", -P)
-    # for i in range(5):
-    #     print(i, "P =", i * P)
-    unittest.main()
+    E = curva_eliptica_sobre_Fq(1, 1, 5, 2)
+    print(E)
+    print(E.coeficientes)
+    print("Discriminante:", E.discriminante)
+    F25 = Fq(5, 2)
+    P = E(F25.cero(), F25.uno())
+    print("P =", P)
+    print("-P =", -P)
+    for i in range(5):
+        print(i, "P =", i * P)
+    #unittest.main()

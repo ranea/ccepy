@@ -11,6 +11,7 @@ Contenidos:
    intro
    aritmetica_elemental
    cuerpos_finitos
+   curvas_elipticas
 
 .. .. currentmodule:: sphinx
 
@@ -20,7 +21,7 @@ Lista de módulos:
 .. autosummary::
    aritmetica_elemental
    cuerpos_finitos
-
+   curvas_elipticas
 
 .. Índices y tablas
 .. ================
