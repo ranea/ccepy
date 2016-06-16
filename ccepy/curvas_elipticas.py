@@ -428,22 +428,17 @@ class PuntoFqRacional(PuntoRacional):
         else:
             return PuntoFqRacional(self.x, -self.y)
 
-    # añadir referencia (adaptación del handbook)
+    # añadir referencia (3.27 guide to elliptic curve)
     @classmethod
     def _multiplicacion_por_duplicacion(cls, punto, k):
-        rep_binaria_k = "".join(reversed(bin(k)[2:]))
-        t = len(rep_binaria_k) - 1
-
+        rep_binaria_k = "".join(bin(k)[2:])  # (k_t, k_{t-1},..., k_0)
         Q = PuntoFqRacional.elemento_neutro()
-        if k == 0:
-            return Q
-        P = copy.deepcopy(punto)
-        if rep_binaria_k[0] == "1":
-            Q = copy.deepcopy(P)
-        for i in range(1, t + 1):
-            P = P + P  # duplicar
-            if rep_binaria_k[i] == "1":
-                Q = P + Q  # suar
+
+        for k_i in rep_binaria_k:
+            Q = Q + Q  # duplicar
+            if k_i == "1":
+                Q = Q + P  # sumar
+
         return Q
 
     def __mul__(self, entero):
