@@ -292,6 +292,7 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
         def _multiplicacion_por_duplicacion(cls, punto, k):
             rep_binaria_k = "".join(bin(k)[2:])  # (k_t, k_{t-1},..., k_0)
             Q = PuntoFqRacional.elemento_neutro()
+            P = punto
 
             for k_i in rep_binaria_k:
                 Q = Q + Q  # duplicar
@@ -428,6 +429,7 @@ class PuntoFqRacional(PuntoRacional):
     def _multiplicacion_por_duplicacion(cls, punto, k):
         rep_binaria_k = "".join(bin(k)[2:])  # (k_t, k_{t-1},..., k_0)
         Q = PuntoFqRacional.elemento_neutro()
+        P = punto
 
         for k_i in rep_binaria_k:
             Q = Q + Q  # duplicar
@@ -550,6 +552,7 @@ def curva_eliptica_sobre_F2m(a, b, m, pol_irreducible=None):
         def _multiplicacion_por_duplicacion(cls, punto, k):
             rep_binaria_k = "".join(bin(k)[2:])  # (k_t, k_{t-1},..., k_0)
             Q = PuntoF2mRacional.elemento_neutro()
+            P = punto
 
             for k_i in rep_binaria_k:
                 Q = Q + Q  # duplicar
@@ -568,7 +571,7 @@ def curva_eliptica_sobre_F2m(a, b, m, pol_irreducible=None):
 
         __rmul__ = __mul__
 
-    F2m = Fq(p, n, pol_irreducible)
+    F2m = Fq(2, m, pol_irreducible)
     A = F2m(a)
     B = F2m(b)
     discriminante = b
