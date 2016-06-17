@@ -287,22 +287,17 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
             else:
                 return PuntoFqRacional(self.x, -self.y)
 
-        # añadir referencia (adaptación del handbook)
+        # añadir referencia (3.27 guide to elliptic curve)
         @classmethod
         def _multiplicacion_por_duplicacion(cls, punto, k):
-            rep_binaria_k = "".join(reversed(bin(k)[2:]))
-            t = len(rep_binaria_k) - 1
-
+            rep_binaria_k = "".join(bin(k)[2:])  # (k_t, k_{t-1},..., k_0)
             Q = PuntoFqRacional.elemento_neutro()
-            if k == 0:
-                return Q
-            P = copy.deepcopy(punto)
-            if rep_binaria_k[0] == "1":
-                Q = copy.deepcopy(P)
-            for i in range(1, t + 1):
-                P = P + P  # duplicar
-                if rep_binaria_k[i] == "1":
-                    Q = P + Q  # suar
+
+            for k_i in rep_binaria_k:
+                Q = Q + Q  # duplicar
+                if k_i == "1":
+                    Q = Q + P  # sumar
+
             return Q
 
         def __mul__(self, entero):
@@ -450,3 +445,137 @@ class PuntoFqRacional(PuntoRacional):
             return PuntoFqRacional._multiplicacion_por_duplicacion(self, entero)
 
     __rmul__ = __mul__
+
+
+def curva_eliptica_sobre_F2m(a, b, m, pol_irreducible=None):
+    """Devuelve el constructor de puntos de una curva elíptica sobre
+    el cuerpo finito de 2**m elementos.
+
+        >>> E = curva_eliptica_sobre_Fq(1, 1, 5, 2)  # y^2 = x^3 + x + 1 sobre F25
+        >>> E
+        <class 'ccepy.curvas_elipticas.curva_eliptica_sobre_Fq.<locals>.PuntoF2mRacional'>
+        >>> E(0, 1)
+        ({[0, 0]; 25},{[1, 0]; 25})
+
+    Los dos primeros argumentos (``a``, ``b``) son los coeficientes de la ecuación
+    de Weierstrass simplificada: :math:`y^2 + x y = x^3 + a x^2 + b`. Estos valores
+    pueden ser bien de tipo ``int`` o bien de tipo ``EnteroModuloP`` o ``ElementoFpn``
+    según sea ``n`` uno o mayor que uno respectivamente.
+
+    Los dos últimos argumentos (``m``, ``pol_irreducible``) definen el cuerpo
+    finito de 2**m elementos sobre el que se define la curva eliptipca.
+
+    Args:
+        a : el coeficiente que acompaña a x^2 en la ecuación de Weierstrass
+        b : el término independiente de la ecuación de Weierstrass
+        m ([int]): un número natural.
+        pol_irreducible (Optional[PolinomioZp]): un polinomio de grado
+            *m* irreducible.
+
+    Return:
+        PuntoF2mRacional: la clase que representa los puntos de la curva elíptica.
+    """
+    class PuntoF2mRacional(PuntoRacional):
+        """..."""
+        # coeficientes (a, b) de la ecuación y^2 + x y = x^3 + a x^2 + b
+        coeficientes = None
+        discriminante = None
+        F2m = None
+
+        @classmethod
+        def contiene(cls, x, y):
+            a, b = cls.coeficientes
+            lado_izquierdo_ecuacion = y**2 + x * y
+            lado_derecho_ecuacion = x**3 + a * x**2 + b
+            return lado_izquierdo_ecuacion == lado_derecho_ecuacion
+
+        def __init__(self, x, y):
+            if x is None or y is None:
+                self._x = None
+                self._y = None
+            else:
+                self._x = PuntoF2mRacional.F2m(x)
+                self._y = PuntoF2mRacional.F2m(y)
+                if not PuntoF2mRacional.contiene(self._x, self._y):
+                    raise ValueError("El punto ({0}, {1})".format(x, y) +
+                                    " no pertenece a la curva.")
+
+        def __eq__(self, other):
+            if self.es_elemento_neutro():
+                return other.es_elemento_neutro()
+            elif other.es_elemento_neutro():
+                return False
+
+            return self.x == other.x and self.y == other.y
+
+        def __add__(self, other):
+            if self.es_elemento_neutro():
+                return other
+            elif other.es_elemento_neutro():
+                return self
+
+            x1, y1 = self.x, self.y
+            x2, y2 = other.x, other.y
+            a = PuntoF2mRacional.coeficientes.a
+            F2m = PuntoF2mRacional.F2m
+
+            if self == other:
+                if x1 == F2m(0):
+                    # P = Q, P = -P, calculamos 2P
+                    return PuntoF2mRacional.elemento_neutro()
+                else:
+                    # P = Q, P != -P, calculamos 2P
+                    m = x1 + y1 / x1
+                    x3 = m**2 + m + a
+                    y3 = x1**2 + (m + 1) * x3
+                    return PuntoF2mRacional(x3, y3)
+            elif x1 == x2:
+                # (y1 != y2) | P != Q, P = -Q, calculamos P - P
+                return PuntoF2mRacional.elemento_neutro()
+            else:
+                # P != +-Q, calculamos P + Q
+                m = (y1 + y2) / (x1 + x2)
+                x3 = m**2 + m + x1 + x2 + a
+                y3 = m * (x1 + x3) + x3 + y1
+                return PuntoF2mRacional(x3, y3)
+
+        def __neg__(self):
+            if self.es_elemento_neutro():
+                return self
+            else:
+                return PuntoF2mRacional(self.x, self.x + self.y)
+
+        # añadir referencia (3.27 guide to elliptic curve)
+        @classmethod
+        def _multiplicacion_por_duplicacion(cls, punto, k):
+            rep_binaria_k = "".join(bin(k)[2:])  # (k_t, k_{t-1},..., k_0)
+            Q = PuntoF2mRacional.elemento_neutro()
+
+            for k_i in rep_binaria_k:
+                Q = Q + Q  # duplicar
+                if k_i == "1":
+                    Q = Q + P  # sumar
+
+            return Q
+
+        def __mul__(self, entero):
+            if self.es_elemento_neutro():
+                return self
+            elif entero < 0:
+                return PuntoF2mRacional._multiplicacion_por_duplicacion(-self, -entero)
+            else:
+                return PuntoF2mRacional._multiplicacion_por_duplicacion(self, entero)
+
+        __rmul__ = __mul__
+
+    F2m = Fq(p, n, pol_irreducible)
+    A = F2m(a)
+    B = F2m(b)
+    discriminante = b
+    if discriminante == F2m.cero():
+        raise ValueError("El discriminant, b, no puede ser cero.")
+
+    PuntoF2mRacional.discriminante = discriminante
+    PuntoF2mRacional.coeficientes = EcuacionWeierstrass(A, B)
+    PuntoF2mRacional.F2m = F2m
+    return PuntoF2mRacional
