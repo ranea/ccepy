@@ -162,7 +162,6 @@ def Fq(p, n=1, pol_irreducible=None):
         __rmul__ = __mul__
 
         # TODO: añadir ref al square-and-multiply del Handbook
-        # TODO: ver que pasa cuando k >  p^m -1
         @classmethod
         def _exponenciacion_binaria(cls, g, k):
             """Calcula la potencia k-ésima del elemento g eficientemente.
@@ -189,10 +188,11 @@ def Fq(p, n=1, pol_irreducible=None):
                     s = G * s
             return s
 
-        # TODO: es cierto que g^q == g^1 para cualquier g en ElementoFq? (para el 0 no)
         def __pow__(self, k):
-            if self == ElementoFq.cero() or self == ElementoFq.uno():
+            if self == ElementoFq.cero():
                 return self
+            if self == ElementoFq.uno() or k == 0:
+                return ElementoFq.uno()
 
             q = ElementoFq.q
             if k < 0:
@@ -337,7 +337,6 @@ class ElementoFq(PolinomioZp):
     __rmul__ = __mul__
 
     # TODO: añadir ref al square-and-multiply del Handbook
-    # TODO: ver que pasa cuando k >  p^m -1
     @classmethod
     def _exponenciacion_binaria(cls, g, k):
         """Calcula la potencia k-ésima del elemento g eficientemente.
@@ -364,10 +363,11 @@ class ElementoFq(PolinomioZp):
                 s = G * s
         return s
 
-    # TODO: es cierto que g^q == g^1 para cualquier g en ElementoFq? (para el 0 no)
     def __pow__(self, k):
-        if self == ElementoFq.cero() or self == ElementoFq.uno():
+        if self == ElementoFq.cero():
             return self
+        if self == ElementoFq.uno() or k == 0:
+            return ElementoFq.uno()
 
         q = ElementoFq.q
         if k < 0:

@@ -2,11 +2,13 @@ import sys
 sys.path.append('../ccepy')
 import unittest
 from collections import namedtuple
-# import doctest
+from fractions import Fraction
+import doctest
 
 from hypothesis import given, assume  # , settings
 from hypothesis.strategies import integers, sampled_from
 
+from ccepy import curvas_elipticas  # para cargar los docstring
 from ccepy.curvas_elipticas import curva_eliptica_sobre_Fq, curva_eliptica_sobre_Q, curva_eliptica_sobre_F2m
 from ccepy.cuerpos_finitos import Fq, PolinomioZp
 
@@ -88,6 +90,7 @@ curvas_eliptipcas_sobre_Fq_famosas = [
     ),
 ]
 
+# TODO: ver que hacer con esto
 # ParametrosCurvaElipticaSobreF2m = namedtuple('CurvaElípticaF2m', ['nombre', 'm', 'pol_irreducible', 'a', 'b', 'x1', 'y1'])
 #
 # # TODO: ref guide to elliptic curve
@@ -104,7 +107,6 @@ curvas_eliptipcas_sobre_Fq_famosas = [
 # ]
 
 
-# TODO: rellenar los docstring?
 class TestCurvaElipticaFq(unittest.TestCase):
     """Conjuto de test para PuntosFqRacionales"""
     @given(sampled_from(curvas_eliptipcas_sobre_Fq_famosas), integers(), integers(), integers())
@@ -115,26 +117,18 @@ class TestCurvaElipticaFq(unittest.TestCase):
 
         E = curva_eliptica_sobre_Fq(ce.a, ce.b, ce.p)
         generador = E(ce.x1, ce.y1)
-        print(ce.nombre)
+        # print(ce.nombre)
 
         P = generador * k1
         Q = generador * k2
         R = generador * k3
         O = E.elemento_neutro()
 
-        print("\tP: {0}\n\tQ: {1}\n\tR: {2}".format(P, Q, R))
+        # print("\tP: {0}\n\tQ: {1}\n\tR: {2}".format(P, Q, R))
         assert P + O == P == O + P
         assert P + (-P) == O
         assert P + Q == Q + P
         assert P + (Q + R) == (P + Q) + R
-
-        # TODO: borrar debug
-        # x1, y1 = Fpn(x1), Fpn(y1)
-        # print("(x1, y1): ({0},{1})".format(x1, y1))
-        # assume(E.contiene(x1, y1))
-        # print("contiene?:", E.contiene(x1, y1))
-        # P = E(x1, y1)
-        # print("P:", P)
 
     @given(sampled_from(curvas_eliptipcas_sobre_Fq_famosas), integers(), integers(min_value=-100, max_value=100))
     def test_multiplicacion_por_duplicacion(self, ce, k, e):
@@ -143,7 +137,7 @@ class TestCurvaElipticaFq(unittest.TestCase):
 
         E = curva_eliptica_sobre_Fq(ce.a, ce.b, ce.p)
         generador = E(ce.x1, ce.y1)
-        print(ce.nombre)
+        # print(ce.nombre)
 
         P = generador * k
 
@@ -155,7 +149,7 @@ class TestCurvaElipticaFq(unittest.TestCase):
             for i in range(e):
                 multiplicacion += P
 
-        print("\tP: {0}\n\tP': {1}".format(P, multiplicacion))
+        # print("\tP: {0}\n\tP': {1}".format(P, multiplicacion))
         assert P * e == multiplicacion
 
 
@@ -242,68 +236,11 @@ class TestCurvaElipticaFq(unittest.TestCase):
 #         assert P * e == multiplicacion
 
 
+# Añade los ejemplos de los docstring
+def load_tests(loader, tests, ignore):
+    tests.addTests(doctest.DocTestSuite(curvas_elipticas))
+    return tests
+
+
 if __name__ == '__main__':
-    # TODO: añadirlo al doctest (añadir tb una curva famosa)
-    # E = curva_eliptica_sobre_Q(0, 4)
-    # print(E.coeficientes)
-    # print("Discriminante:", E.discriminante)
-    # P = E(0, -2)
-    # print("P =", P)
-    # print("-P =", -P)
-    # for i in range(3):
-    #     print(i, "P =", i * P)
-    #
-    # E = curva_eliptica_sobre_Q(-18, -72)
-    # print(E.coeficientes)
-    # print("Discriminante:", E.discriminante)
-    # P = E(6, 6)
-    # print("P =", P)
-    # print("-P =", -P)
-    # for i in range(5):
-    #     print(i, "P =", i * P)
-
-    # E = curva_eliptica_sobre_Fq(2, 3, 97, 1)
-    # print(E.coeficientes)
-    # print("Discriminante:", E.discriminante)
-    # F97 = Fq(97, 1)
-    # P = E(0, 10)
-    # print("P =", P)
-    # print("-P =", -P)
-    # for i in range(5):
-    #     print(i, "P =", i * P)
-    # Q = E(3, 6)
-    # print("Q =", Q)
-    # print("P + Q =", P + Q)
-
-    # E = curva_eliptica_sobre_Fq(1, 1, 5, 2)
-    # print(E)
-    # print(E.coeficientes)
-    # print("Discriminante:", E.discriminante)
-    # F25 = Fq(5, 2)
-    # P = E(F25.cero(), F25.uno())
-    # print("P =", P)
-    # print("-P =", -P)
-    # for i in range(5):
-    #     print(i, "P =", i * P)
-
-    # pol_irreducible = PolinomioZp([1, 1, 0, 0, 1], p=2)
-    # F16 = Fq(2, 4, pol_irreducible)
-    # a = F16([0, 0, 0, 1])
-    # b = F16([1, 0, 0, 1])
-    # E = curva_eliptica_sobre_F2m(a, b, 4, pol_irreducible)
-    # print(E)
-    # print(E.coeficientes)
-    # print("Discriminante:", E.discriminante)
-    # P = E(F16.uno(), F16.uno())
-    # print("P =", P)
-    # print("-P =", -P)
-    # for i in range(5):
-    #     print(i, "P =", i * P)
-    # P = E(F16([0, 1, 0, 0]), F16([1, 1, 1, 1]))
-    # Q = E(F16([0, 0, 1, 1]), F16([0, 0, 1, 1]))
-    # print("P =", P)
-    # print("Q =", Q)
-    # print("P + Q =", P + Q)
-    # print("2P =", 2 * P)
-
     unittest.main()

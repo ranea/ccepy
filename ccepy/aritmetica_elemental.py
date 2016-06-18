@@ -390,7 +390,6 @@ class EnteroModuloP(int):
         return super().__hash__()
 
 
-# TODO: recompilar ejemplos
 class PolinomioZp:
     """Representa un polinomio con coeficientes enteros módulo un primo p.
 
