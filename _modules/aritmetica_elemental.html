@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">Primeros pasos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../aritmetica_elemental.html">Aritmética elemental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cuerpos_finitos.html">Cuerpos finitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../curvas_elipticas.html">Curvas elípticas</a></li>
 </ul>
 
             
@@ -315,6 +316,24 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">None</span>
 
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">cero</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Devuelve el cero.</span>
+
+<span class="sd">            Return:</span>
+<span class="sd">                EnteroModuloP: el cero.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">uno</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Devuelve el uno.</span>
+
+<span class="sd">            Return:</span>
+<span class="sd">                EnteroModuloP: el uno.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Instancie usando la función Zp()&quot;</span><span class="p">)</span>
@@ -383,6 +402,7 @@
     <span class="k">return</span> <span class="n">EnteroModuloP</span></div>
 
 
+<span class="c1"># TODO: remover clase tras realizar documentación</span>
 <div class="viewcode-block" id="EnteroModuloP"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP">[documentos]</a><span class="k">class</span> <span class="nc">EnteroModuloP</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Representa un entero módulo un primo p.</span>
 
@@ -415,6 +435,24 @@
 <span class="sd">        p (int): el primo p (*atributo de clase*).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">p</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="EnteroModuloP.cero"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP.cero">[documentos]</a>    <span class="k">def</span> <span class="nf">cero</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el cero.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            EnteroModuloP: el cero.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="EnteroModuloP.uno"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP.uno">[documentos]</a>    <span class="k">def</span> <span class="nf">uno</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el uno.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            EnteroModuloP: el uno.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">EnteroModuloP</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">EnteroModuloP</span><span class="o">.</span><span class="n">p</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -484,8 +522,7 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__hash__</span><span class="p">()</span></div>
 
 
-<span class="c1"># TODO: recompilar ejemplos</span>
-<div class="viewcode-block" id="PolinomioZp"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp">[documentos]</a><span class="k">class</span> <span class="nc">PolinomioZp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PolinomioZp"><a class="viewcode-back" href="../aritmetica_elemental.html#aritmetica_elemental.PolinomioZp">[documentos]</a><span class="k">class</span> <span class="nc">PolinomioZp</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Representa un polinomio con coeficientes enteros módulo un primo p.</span>
 
 <span class="sd">        &gt;&gt;&gt; f = PolinomioZp([0, 0, 1], p=2)</span>

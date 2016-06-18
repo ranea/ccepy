@@ -1,0 +1,1263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>curvas_elipticas &mdash; documentación de ccepy - 0.0.1</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="documentación de ccepy - 0.0.1" href="../index.html"/>
+        <link rel="up" title="Código de módulo" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ccepy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Primeros pasos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aritmetica_elemental.html">Aritmética elemental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cuerpos_finitos.html">Cuerpos finitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../curvas_elipticas.html">Curvas elípticas</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">ccepy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Código de módulo</a> &raquo;</li>
+      
+    <li>curvas_elipticas</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Código fuente para curvas_elipticas</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Aritmética con curvas elípticas.</span>
+
+<span class="sd">Este módulo permite operar con el grupo de puntos de una curva elíptica.</span>
+
+<span class="sd">Para utilizar las funciones y las clases de este módulo, debe importarlo</span>
+<span class="sd">previamente: ::</span>
+
+<span class="sd">    # reemplace ... por la función/clase que desea utilizar</span>
+<span class="sd">    from ccepy.curvas_elipticas import ...</span>
+
+<span class="sd">Para operar con puntos de una curva elíptica, use las funciones de la forma</span>
+<span class="sd">``curva_eliptica_sobre_*`` y los operadores aritméticos habituales.</span>
+
+<span class="sd">    &gt;&gt;&gt; E = curva_eliptica_sobre_Fq(a=2, b=3, p=97)  # y^2 = x^3 + 2x + 3 sobre F97</span>
+<span class="sd">    &gt;&gt;&gt; E.coeficientes</span>
+<span class="sd">    Coeficientes(a=2, b=3)</span>
+<span class="sd">    &gt;&gt;&gt; P = E(0, 10)</span>
+<span class="sd">    &gt;&gt;&gt; P</span>
+<span class="sd">    (0,10)</span>
+<span class="sd">    &gt;&gt;&gt; Q = E(3, 6)</span>
+<span class="sd">    &gt;&gt;&gt; Q</span>
+<span class="sd">    (3,6)</span>
+<span class="sd">    &gt;&gt;&gt; P + Q</span>
+<span class="sd">    (85,71)</span>
+<span class="sd">    &gt;&gt;&gt; -P</span>
+<span class="sd">    (0,87)</span>
+<span class="sd">    &gt;&gt;&gt; 3 * P</span>
+<span class="sd">    (23,24)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">fractions</span> <span class="kn">import</span> <span class="n">Fraction</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+<span class="n">EcuacionWeierstrass</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Coeficientes&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
+
+<span class="kn">from</span> <span class="nn">ccepy.cuerpos_finitos</span> <span class="kn">import</span> <span class="n">Fq</span><span class="p">,</span> <span class="n">PolinomioZp</span>  <span class="c1"># PolinomioZp para los test</span>
+
+
+<div class="viewcode-block" id="PuntoRacional"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.PuntoRacional">[documentos]</a><span class="k">class</span> <span class="nc">PuntoRacional</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Clase abstracta que representa un punto racional de una curva elíptica.</span>
+<span class="sd">    El resto de las clases ``Punto*Racional`` heredan de esta.</span>
+
+<span class="sd">    Esta clase no se puede instanciar. Sirve como punto de partida para</span>
+<span class="sd">    crear curvas elípticas sobre nuevos cuerpos.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_x&#39;</span><span class="p">,</span> <span class="s1">&#39;_y&#39;</span><span class="p">)</span>  <span class="c1"># para mejorar la eficiencia si hay muchos objetos</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">contiene</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Comprueba si (x,y) esta en la curva.&quot;&quot;&quot;</span>
+        <span class="k">return</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="c1"># Debe inicializar self._x y self._y.</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">es_elemento_neutro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Comprueba si es el elemento neutro (el punto del infinito).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: verdadero o falso.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="ow">is</span> <span class="bp">None</span>
+
+    <span class="c1"># TODO: explicar en algún lado el uso de property</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;La componente x del punto si no es el elemento neutro. Es un</span>
+<span class="sd">        atributo de solo lectura.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;El elemento neutro no tiene componente x&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;La componente y del punto si no es el elemento neutro. Es un</span>
+<span class="sd">        atributo de solo lectura.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;El elemento neutro no tiene componente y&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">elemento_neutro</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el elemento neutro.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            El elemento neutro.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="s2">&quot;Elemento neutro&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;({0},{1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">__repr__</span> <span class="o">=</span> <span class="n">__str__</span></div>
+
+
+<div class="viewcode-block" id="curva_eliptica_sobre_Fq"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.curva_eliptica_sobre_Fq">[documentos]</a><span class="k">def</span> <span class="nf">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Devuelve el constructor de puntos de una curva elíptica sobre</span>
+<span class="sd">    un cuerpo finito de q elementos de característica distinta de 2 y 3.</span>
+
+<span class="sd">        &gt;&gt;&gt; E = curva_eliptica_sobre_Fq(1, 1, 5, 2)  # y^2 = x^3 + x + 1 sobre F25</span>
+<span class="sd">        &gt;&gt;&gt; E</span>
+<span class="sd">        &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Fq.&lt;locals&gt;.PuntoFqRacional&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; E(0, 1)</span>
+<span class="sd">        ({[0, 0]; 25},{[1, 0]; 25})</span>
+
+<span class="sd">    Los dos primeros argumentos (``a``, ``b``) son los coeficientes de la ecuación</span>
+<span class="sd">    de Weierstrass simplificada: :math:`y^2 = x^3 + a x + b`. Estos valores</span>
+<span class="sd">    pueden ser bien de tipo :py:class:`int` o bien de tipo :class:`.EnteroModuloP` o</span>
+<span class="sd">    :class:`.ElementoFq` según sea ``n`` uno o mayor que uno respectivamente.</span>
+
+<span class="sd">    Los tres últimos argumentos (``p``, ``n``, ``pol_irreducible``) definen el cuerpo</span>
+<span class="sd">    finito de p**n elementos sobre el que se define la curva eliptipca.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a : el coeficiente que acompaña a x en la ecuación de Weierstrass</span>
+<span class="sd">        b : el término independiente de la ecuación de Weierstrass</span>
+<span class="sd">        p (int): un número primo.</span>
+<span class="sd">        n (Optional[int]): un número natural.</span>
+<span class="sd">        pol_irreducible (Optional[PolinomioZp]): un polinomio de grado</span>
+<span class="sd">            *n* irreducible.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        PuntoFqRacional: la clase que representa los puntos de la curva elíptica.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">PuntoFqRacional</span><span class="p">(</span><span class="n">PuntoRacional</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Representa un punto de una curva elíptica sobre un cuerpo finito de</span>
+<span class="sd">        q elementos de característica distinta de 2 y 3.</span>
+
+<span class="sd">            &gt;&gt;&gt; E = curva_eliptica_sobre_Fq(1, 1, 5, 2)  # y^2 = x^3 + x + 1 sobre F25</span>
+<span class="sd">            &gt;&gt;&gt; F25 = Fq(5, 2)</span>
+<span class="sd">            &gt;&gt;&gt; P = E(F25.cero(), F25.uno())</span>
+<span class="sd">            &gt;&gt;&gt; type(P)</span>
+<span class="sd">            &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Fq.&lt;locals&gt;.PuntoFqRacional&#39;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; P</span>
+<span class="sd">            ({[0, 0]; 25},{[1, 0]; 25})</span>
+<span class="sd">            &gt;&gt;&gt; Q = E(F25([4, 0]), F25([2, 0]))</span>
+<span class="sd">            &gt;&gt;&gt; Q</span>
+<span class="sd">            ({[4, 0]; 25},{[2, 0]; 25})</span>
+<span class="sd">            &gt;&gt;&gt; P + Q</span>
+<span class="sd">            ({[2, 0]; 25},{[1, 0]; 25})</span>
+<span class="sd">            &gt;&gt;&gt; -P</span>
+<span class="sd">            ({[0, 0]; 25},{[4, 0]; 25})</span>
+<span class="sd">            &gt;&gt;&gt; 4 * P</span>
+<span class="sd">            ({[3, 0]; 25},{[4, 0]; 25})</span>
+
+<span class="sd">        La curva elíptica está definida por la ecuación de Weierstrass</span>
+<span class="sd">        simplificada :math:`y^2 = x^3 + a x + b`.</span>
+
+<span class="sd">        Soporta los operadores ``+``, ``-``, ``*`` con su significado habitual.</span>
+
+<span class="sd">        Los parámetros ``x``, ``y`` deben ser del tipo :class:`.EnteroModuloP` o</span>
+<span class="sd">        :class:`.ElementoFq` según el cuerpo finito tenga un número primo de</span>
+<span class="sd">        elementos o un número potencia de un primo de elementos. Para construir</span>
+<span class="sd">        elementos de estos tipos, utilice :func:`.Fq`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: un elemento del cuerpo finito de q elementos.</span>
+<span class="sd">            y: un elemento del cuerpo finito de q elementos.</span>
+
+<span class="sd">        Los elementos de ``coeficientes`` y ``discriminante`` serán del tipo</span>
+<span class="sd">        :class:`.EnteroModuloP` o :class:`.ElementoFq` según el cuerpo finito</span>
+<span class="sd">        tenga un número primo de elementos o un número potencia de un primo de</span>
+<span class="sd">        elementos.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            coeficientes (Tuple): los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</span>
+<span class="sd">            discriminante: El discriminate de la curva elíptica. (atributo de clase)</span>
+<span class="sd">            Fq: El constructor de elementos del cuerpo finito de q elementos. (atributo de clase)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># coeficientes (a, b) de la ecuación y^2 = x^3 + a*x + b</span>
+        <span class="n">coeficientes</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">discriminante</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">Fq</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">contiene</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">coeficientes</span>
+            <span class="n">lado_izquierdo_ecuacion</span> <span class="o">=</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">lado_derecho_ecuacion</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+            <span class="k">return</span> <span class="n">lado_izquierdo_ecuacion</span> <span class="o">==</span> <span class="n">lado_derecho_ecuacion</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">Fq</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">Fq</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">contiene</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El punto ({0}, {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span>
+                                    <span class="s2">&quot; no pertenece a la curva.&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">other</span>
+            <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">Fq</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">Fq</span>
+
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">y1</span> <span class="o">==</span> <span class="n">Fq</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">Fq</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">x1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Fq</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">y1</span><span class="p">)</span>
+                    <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">Fq</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x1</span>
+                    <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">-</span> <span class="n">y1</span>
+                    <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>
+                <span class="c1"># y1 != y2</span>
+                <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
+                <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span>
+                <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">-</span> <span class="n">y1</span>
+                <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># añadir referencia (3.27 guide to elliptic curve)</span>
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">punto</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Realiza la multiplicación k * punto mediante el método de</span>
+<span class="sd">            multiplicación por duplicación.&quot;&quot;&quot;</span>
+            <span class="n">rep_binaria_k</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">k</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>  <span class="c1"># (k_t, k_{t-1},..., k_0)</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">punto</span>
+
+            <span class="k">for</span> <span class="n">k_i</span> <span class="ow">in</span> <span class="n">rep_binaria_k</span><span class="p">:</span>
+                <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">Q</span>  <span class="c1"># duplicar</span>
+                <span class="k">if</span> <span class="n">k_i</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                    <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">P</span>  <span class="c1"># sumar</span>
+
+            <span class="k">return</span> <span class="n">Q</span>
+
+        <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">elif</span> <span class="n">entero</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="n">entero</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">)</span>
+
+        <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
+
+    <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;p no puede ser ni 2 ni 3.&quot;</span><span class="p">)</span>
+
+    <span class="n">F_q</span> <span class="o">=</span> <span class="n">Fq</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">F_q</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">F_q</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">discriminante</span> <span class="o">=</span> <span class="n">F_q</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">F_q</span><span class="p">(</span><span class="mi">27</span><span class="p">)</span> <span class="o">*</span> <span class="n">B</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">discriminante</span> <span class="o">==</span> <span class="n">F_q</span><span class="o">.</span><span class="n">cero</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El discriminant, 4a^3 + 27b^2, no puede ser cero.&quot;</span><span class="p">)</span>
+
+    <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">discriminante</span> <span class="o">=</span> <span class="n">discriminante</span>
+    <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">coeficientes</span> <span class="o">=</span> <span class="n">EcuacionWeierstrass</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">Fq</span> <span class="o">=</span> <span class="n">F_q</span>
+    <span class="k">return</span> <span class="n">PuntoFqRacional</span></div>
+
+
+<span class="c1"># TODO: remover clase tras realizar documentación</span>
+<div class="viewcode-block" id="PuntoFqRacional"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.PuntoFqRacional">[documentos]</a><span class="k">class</span> <span class="nc">PuntoFqRacional</span><span class="p">(</span><span class="n">PuntoRacional</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representa un punto de una curva elíptica sobre un cuerpo finito de</span>
+<span class="sd">    q elementos de característica distinta de 2 y 3.</span>
+
+<span class="sd">        &gt;&gt;&gt; E = curva_eliptica_sobre_Fq(1, 1, 5, 2)  # y^2 = x^3 + x + 1 sobre F25</span>
+<span class="sd">        &gt;&gt;&gt; F25 = Fq(5, 2)</span>
+<span class="sd">        &gt;&gt;&gt; P = E(F25.cero(), F25.uno())</span>
+<span class="sd">        &gt;&gt;&gt; type(P)</span>
+<span class="sd">        &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Fq.&lt;locals&gt;.PuntoFqRacional&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; P</span>
+<span class="sd">        ({[0, 0]; 25},{[1, 0]; 25})</span>
+<span class="sd">        &gt;&gt;&gt; Q = E(F25([4, 0]), F25([2, 0]))</span>
+<span class="sd">        &gt;&gt;&gt; Q</span>
+<span class="sd">        ({[4, 0]; 25},{[2, 0]; 25})</span>
+<span class="sd">        &gt;&gt;&gt; P + Q</span>
+<span class="sd">        ({[2, 0]; 25},{[1, 0]; 25})</span>
+<span class="sd">        &gt;&gt;&gt; -P</span>
+<span class="sd">        ({[0, 0]; 25},{[4, 0]; 25})</span>
+<span class="sd">        &gt;&gt;&gt; 4 * P</span>
+<span class="sd">        ({[3, 0]; 25},{[4, 0]; 25})</span>
+
+<span class="sd">    La curva elíptica está definida por la ecuación de Weierstrass</span>
+<span class="sd">    simplificada :math:`y^2 = x^3 + a x + b`.</span>
+
+<span class="sd">    Soporta los operadores ``+``, ``-``, ``*`` con su significado habitual.</span>
+
+<span class="sd">    Los parámetros ``x``, ``y`` deben ser del tipo :class:`.EnteroModuloP` o</span>
+<span class="sd">    :class:`.ElementoFq` según el cuerpo finito tenga un número primo de</span>
+<span class="sd">    elementos o un número potencia de un primo de elementos. Para construir</span>
+<span class="sd">    elementos de estos tipos, utilice :func:`.Fq`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: un elemento del cuerpo finito de q elementos.</span>
+<span class="sd">        y: un elemento del cuerpo finito de q elementos.</span>
+
+<span class="sd">    Los elementos de ``coeficientes`` y ``discriminante`` serán del tipo</span>
+<span class="sd">    :class:`.EnteroModuloP` o :class:`.ElementoFq` según el cuerpo finito</span>
+<span class="sd">    tenga un número primo de elementos o un número potencia de un primo de</span>
+<span class="sd">    elementos.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        coeficientes (Tuple): los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</span>
+<span class="sd">        discriminante: El discriminate de la curva elíptica. (atributo de clase)</span>
+<span class="sd">        Fq: El constructor de elementos del cuerpo finito de q elementos. (atributo de clase)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coeficientes</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">discriminante</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">Fq</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PuntoFqRacional.contiene"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.PuntoFqRacional.contiene">[documentos]</a>    <span class="k">def</span> <span class="nf">contiene</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Comprueba si el punto (x, y) pertenece a la curva elíptica.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            a : un elemento del cuerpo finito de q elementos.</span>
+<span class="sd">            b : un elemento del cuerpo finito de q elementos.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: verdadero o falso.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">coeficientes</span>
+        <span class="n">lado_izquierdo_ecuacion</span> <span class="o">=</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">lado_derecho_ecuacion</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+        <span class="k">return</span> <span class="n">lado_izquierdo_ecuacion</span> <span class="o">==</span> <span class="n">lado_derecho_ecuacion</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">Fq</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">Fq</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">contiene</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El punto ({0}, {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span>
+                                <span class="s2">&quot; no pertenece a la curva.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">a</span>
+        <span class="n">Fq</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">Fq</span>
+
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">y1</span> <span class="o">==</span> <span class="n">Fq</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">Fq</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">x1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Fq</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">y1</span><span class="p">)</span>
+                <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">Fq</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x1</span>
+                <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">-</span> <span class="n">y1</span>
+                <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>
+            <span class="c1"># y1 != y2</span>
+            <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
+            <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span>
+            <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">-</span> <span class="n">y1</span>
+            <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># añadir referencia (3.27 guide to elliptic curve)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">punto</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Realiza la multiplicación k * punto mediante el método de</span>
+<span class="sd">        multiplicación por duplicación.&quot;&quot;&quot;</span>
+        <span class="n">rep_binaria_k</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">k</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>  <span class="c1"># (k_t, k_{t-1},..., k_0)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">punto</span>
+
+        <span class="k">for</span> <span class="n">k_i</span> <span class="ow">in</span> <span class="n">rep_binaria_k</span><span class="p">:</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">Q</span>  <span class="c1"># duplicar</span>
+            <span class="k">if</span> <span class="n">k_i</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">P</span>  <span class="c1"># sumar</span>
+
+        <span class="k">return</span> <span class="n">Q</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">elif</span> <span class="n">entero</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="n">entero</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PuntoFqRacional</span><span class="o">.</span><span class="n">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">)</span>
+
+    <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span></div>
+
+
+<div class="viewcode-block" id="curva_eliptica_sobre_F2m"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.curva_eliptica_sobre_F2m">[documentos]</a><span class="k">def</span> <span class="nf">curva_eliptica_sobre_F2m</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Devuelve el constructor de puntos de una curva elíptica sobre</span>
+<span class="sd">    el cuerpo finito de 2**m elementos.</span>
+
+<span class="sd">        &gt;&gt;&gt; pol_irreducible = PolinomioZp([1, 1, 0, 0, 1], p=2)</span>
+<span class="sd">        &gt;&gt;&gt; F16 = Fq(2, 4, pol_irreducible)</span>
+<span class="sd">        &gt;&gt;&gt; a = F16([0, 0, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; b = F16([1, 0, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; E = curva_eliptica_sobre_F2m(a, b, 4, pol_irreducible)</span>
+<span class="sd">        &gt;&gt;&gt; E</span>
+<span class="sd">        &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_F2m.&lt;locals&gt;.PuntoF2mRacional&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; E(F16.uno(), F16.uno())</span>
+<span class="sd">        ({[1, 0, 0, 0]; 16},{[1, 0, 0, 0]; 16})</span>
+
+<span class="sd">    Los dos primeros argumentos (``a``, ``b``) son los coeficientes de la ecuación</span>
+<span class="sd">    de Weierstrass simplificada: :math:`y^2 + x y = x^3 + a x^2 + b`. Estos valores</span>
+<span class="sd">    pueden ser bien de tipo :py:class:`int` o bien de tipo :class:`.EnteroModuloP` o</span>
+<span class="sd">    :class:`.ElementoFq` según sea ``n`` uno o mayor que uno respectivamente.</span>
+
+<span class="sd">    Los dos últimos argumentos (``m``, ``pol_irreducible``) definen el cuerpo</span>
+<span class="sd">    finito de 2**m elementos sobre el que se define la curva eliptipca.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a : el coeficiente que acompaña a x^2 en la ecuación de Weierstrass</span>
+<span class="sd">        b : el término independiente de la ecuación de Weierstrass</span>
+<span class="sd">        m ([int]): un número natural.</span>
+<span class="sd">        pol_irreducible (Optional[PolinomioZp]): un polinomio de grado</span>
+<span class="sd">            *m* irreducible.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        PuntoF2mRacional: la clase que representa los puntos de la curva elíptica.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">PuntoF2mRacional</span><span class="p">(</span><span class="n">PuntoRacional</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Representa un punto de una curva elíptica sobre el cuerpo finito de</span>
+<span class="sd">        2**m elementos.</span>
+
+<span class="sd">            &gt;&gt;&gt; pol_irreducible = PolinomioZp([1, 1, 0, 0, 1], p=2)</span>
+<span class="sd">            &gt;&gt;&gt; F16 = Fq(2, 4, pol_irreducible)</span>
+<span class="sd">            &gt;&gt;&gt; a = F16([0, 0, 0, 1])</span>
+<span class="sd">            &gt;&gt;&gt; b = F16([1, 0, 0, 1])</span>
+<span class="sd">            &gt;&gt;&gt; E = curva_eliptica_sobre_F2m(a, b, 4, pol_irreducible)</span>
+<span class="sd">            &gt;&gt;&gt; E.coeficientes</span>
+<span class="sd">            Coeficientes(a={[0, 0, 0, 1]; 16}, b={[1, 0, 0, 1]; 16})</span>
+<span class="sd">            &gt;&gt;&gt; P = E(F16([0, 1, 0, 0]), F16([1, 1, 1, 1]))</span>
+<span class="sd">            &gt;&gt;&gt; type(P)</span>
+<span class="sd">            &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_F2m.&lt;locals&gt;.PuntoF2mRacional&#39;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; P</span>
+<span class="sd">            ({[0, 1, 0, 0]; 16},{[1, 1, 1, 1]; 16})</span>
+<span class="sd">            &gt;&gt;&gt; Q = E(F16([0, 0, 1, 1]), F16([0, 0, 1, 1]))</span>
+<span class="sd">            &gt;&gt;&gt; Q</span>
+<span class="sd">            ({[0, 0, 1, 1]; 16},{[0, 0, 1, 1]; 16})</span>
+<span class="sd">            &gt;&gt;&gt; P + Q</span>
+<span class="sd">            ({[1, 0, 0, 0]; 16},{[1, 0, 0, 0]; 16})</span>
+<span class="sd">            &gt;&gt;&gt; -P</span>
+<span class="sd">            ({[0, 1, 0, 0]; 16},{[1, 0, 1, 1]; 16})</span>
+<span class="sd">            &gt;&gt;&gt; 2 * P</span>
+<span class="sd">            ({[1, 1, 0, 1]; 16},{[0, 1, 0, 0]; 16})</span>
+
+<span class="sd">        La curva elíptica está definida por la ecuación de Weierstrass</span>
+<span class="sd">        simplificada :math:`y^2 + x y = x^3 + a x^2 + b`.</span>
+
+<span class="sd">        Soporta los operadores ``+``, ``-``, ``*`` con su significado habitual.</span>
+
+<span class="sd">        Los parámetros ``x``, ``y`` deben ser del tipo :class:`.EnteroModuloP` o</span>
+<span class="sd">        :class:`.ElementoFq` según m sea uno o mayor que uno. Para construir</span>
+<span class="sd">        elementos de estos tipos, utilice :func:`.Fq`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: un elemento del cuerpo finito de 2**m elementos.</span>
+<span class="sd">            y: un elemento del cuerpo finito de 2**m elementos.</span>
+
+<span class="sd">        Los elementos de ``coeficientes`` y ``discriminante`` serán del tipo</span>
+<span class="sd">        :class:`.EnteroModuloP` o :class:`.ElementoFq` según m sea uno o</span>
+<span class="sd">        mayor que uno.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            coeficientes (Tuple): los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</span>
+<span class="sd">            discriminante: El discriminate de la curva elíptica. (atributo de clase)</span>
+<span class="sd">            Fq: El constructor de elementos del cuerpo finito de 2**m elementos. (atributo de clase)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># coeficientes (a, b) de la ecuación y^2 + x y = x^3 + a x^2 + b</span>
+        <span class="n">coeficientes</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">discriminante</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">F2m</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">contiene</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Comprueba si el punto (x, y) pertenece a la curva elíptica.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                a : un elemento del cuerpo finito de 2**m elementos.</span>
+<span class="sd">                b : un elemento del cuerpo finito de 2**m elementos.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                bool: verdadero o falso.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">coeficientes</span>
+            <span class="n">lado_izquierdo_ecuacion</span> <span class="o">=</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span>
+            <span class="n">lado_derecho_ecuacion</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">b</span>
+            <span class="k">return</span> <span class="n">lado_izquierdo_ecuacion</span> <span class="o">==</span> <span class="n">lado_derecho_ecuacion</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">F2m</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">F2m</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">contiene</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El punto ({0}, {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span>
+                                    <span class="s2">&quot; no pertenece a la curva.&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">other</span>
+            <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">a</span>
+            <span class="n">F2m</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">F2m</span>
+
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">F2m</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+                    <span class="c1"># P = Q, P = -P, calculamos 2P</span>
+                    <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># P = Q, P != -P, calculamos 2P</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">y1</span> <span class="o">/</span> <span class="n">x1</span>
+                    <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">m</span> <span class="o">+</span> <span class="n">a</span>
+                    <span class="n">y3</span> <span class="o">=</span> <span class="n">x1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">x3</span>
+                    <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>
+                <span class="c1"># (y1 != y2) | P != Q, P = -Q, calculamos P - P</span>
+                <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># P != +-Q, calculamos P + Q</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span><span class="p">)</span>
+                <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">m</span> <span class="o">+</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">a</span>
+                <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x3</span><span class="p">)</span> <span class="o">+</span> <span class="n">x3</span> <span class="o">+</span> <span class="n">y1</span>
+                <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># añadir referencia (3.27 guide to elliptic curve)</span>
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">punto</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+            <span class="n">rep_binaria_k</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">k</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>  <span class="c1"># (k_t, k_{t-1},..., k_0)</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">punto</span>
+
+            <span class="k">for</span> <span class="n">k_i</span> <span class="ow">in</span> <span class="n">rep_binaria_k</span><span class="p">:</span>
+                <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">Q</span>  <span class="c1"># duplicar</span>
+                <span class="k">if</span> <span class="n">k_i</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                    <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">P</span>  <span class="c1"># sumar</span>
+
+            <span class="k">return</span> <span class="n">Q</span>
+
+        <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">elif</span> <span class="n">entero</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="n">entero</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">)</span>
+
+        <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
+
+    <span class="n">F2m</span> <span class="o">=</span> <span class="n">Fq</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">F2m</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">F2m</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">discriminante</span> <span class="o">=</span> <span class="n">B</span>
+    <span class="k">if</span> <span class="n">discriminante</span> <span class="o">==</span> <span class="n">F2m</span><span class="o">.</span><span class="n">cero</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El discriminant, b, no puede ser cero.&quot;</span><span class="p">)</span>
+
+    <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">discriminante</span> <span class="o">=</span> <span class="n">discriminante</span>
+    <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">coeficientes</span> <span class="o">=</span> <span class="n">EcuacionWeierstrass</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">F2m</span> <span class="o">=</span> <span class="n">F2m</span>
+    <span class="k">return</span> <span class="n">PuntoF2mRacional</span></div>
+
+
+<span class="c1"># TODO: remover clase tras realizar documentación</span>
+<div class="viewcode-block" id="PuntoF2mRacional"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.PuntoF2mRacional">[documentos]</a><span class="k">class</span> <span class="nc">PuntoF2mRacional</span><span class="p">(</span><span class="n">PuntoRacional</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representa un punto de una curva elíptica sobre el cuerpo finito de</span>
+<span class="sd">    2**m elementos.</span>
+
+<span class="sd">        &gt;&gt;&gt; pol_irreducible = PolinomioZp([1, 1, 0, 0, 1], p=2)</span>
+<span class="sd">        &gt;&gt;&gt; F16 = Fq(2, 4, pol_irreducible)</span>
+<span class="sd">        &gt;&gt;&gt; a = F16([0, 0, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; b = F16([1, 0, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; E = curva_eliptica_sobre_F2m(a, b, 4, pol_irreducible)</span>
+<span class="sd">        &gt;&gt;&gt; E.coeficientes</span>
+<span class="sd">        Coeficientes(a={[0, 0, 0, 1]; 16}, b={[1, 0, 0, 1]; 16})</span>
+<span class="sd">        &gt;&gt;&gt; P = E(F16([0, 1, 0, 0]), F16([1, 1, 1, 1]))</span>
+<span class="sd">        &gt;&gt;&gt; type(P)</span>
+<span class="sd">        &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_F2m.&lt;locals&gt;.PuntoF2mRacional&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; P</span>
+<span class="sd">        ({[0, 1, 0, 0]; 16},{[1, 1, 1, 1]; 16})</span>
+<span class="sd">        &gt;&gt;&gt; Q = E(F16([0, 0, 1, 1]), F16([0, 0, 1, 1]))</span>
+<span class="sd">        &gt;&gt;&gt; Q</span>
+<span class="sd">        ({[0, 0, 1, 1]; 16},{[0, 0, 1, 1]; 16})</span>
+<span class="sd">        &gt;&gt;&gt; P + Q</span>
+<span class="sd">        ({[1, 0, 0, 0]; 16},{[1, 0, 0, 0]; 16})</span>
+<span class="sd">        &gt;&gt;&gt; -P</span>
+<span class="sd">        ({[0, 1, 0, 0]; 16},{[1, 0, 1, 1]; 16})</span>
+<span class="sd">        &gt;&gt;&gt; 2 * P</span>
+<span class="sd">        ({[1, 1, 0, 1]; 16},{[0, 1, 0, 0]; 16})</span>
+
+<span class="sd">    La curva elíptica está definida por la ecuación de Weierstrass</span>
+<span class="sd">    simplificada :math:`y^2 + x y = x^3 + a x^2 + b`.</span>
+
+<span class="sd">    Soporta los operadores ``+``, ``-``, ``*`` con su significado habitual.</span>
+
+<span class="sd">    Los parámetros ``x``, ``y`` deben ser del tipo :class:`.EnteroModuloP` o</span>
+<span class="sd">    :class:`.ElementoFq` según m sea uno o mayor que uno. Para construir</span>
+<span class="sd">    elementos de estos tipos, utilice :func:`.Fq`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: un elemento del cuerpo finito de 2**m elementos.</span>
+<span class="sd">        y: un elemento del cuerpo finito de 2**m elementos.</span>
+
+<span class="sd">    Los elementos de ``coeficientes`` y ``discriminante`` serán del tipo</span>
+<span class="sd">    :class:`.EnteroModuloP` o :class:`.ElementoFq` según m sea uno o</span>
+<span class="sd">    mayor que uno.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        coeficientes (Tuple): los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</span>
+<span class="sd">        discriminante: El discriminate de la curva elíptica. (atributo de clase)</span>
+<span class="sd">        Fq: El constructor de elementos del cuerpo finito de 2**m elementos. (atributo de clase)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coeficientes</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">discriminante</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">F2m</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PuntoF2mRacional.contiene"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.PuntoF2mRacional.contiene">[documentos]</a>    <span class="k">def</span> <span class="nf">contiene</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Comprueba si el punto (x, y) pertenece a la curva elíptica.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            a : un elemento del cuerpo finito de 2**m elementos.</span>
+<span class="sd">            b : un elemento del cuerpo finito de 2**m elementos.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: verdadero o falso.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">coeficientes</span>
+        <span class="n">lado_izquierdo_ecuacion</span> <span class="o">=</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span>
+        <span class="n">lado_derecho_ecuacion</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">b</span>
+        <span class="k">return</span> <span class="n">lado_izquierdo_ecuacion</span> <span class="o">==</span> <span class="n">lado_derecho_ecuacion</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">F2m</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">F2m</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">contiene</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El punto ({0}, {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span>
+                                <span class="s2">&quot; no pertenece a la curva.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">a</span>
+        <span class="n">F2m</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">F2m</span>
+
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">F2m</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+                <span class="c1"># P = Q, P = -P, calculamos 2P</span>
+                <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># P = Q, P != -P, calculamos 2P</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">y1</span> <span class="o">/</span> <span class="n">x1</span>
+                <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">m</span> <span class="o">+</span> <span class="n">a</span>
+                <span class="n">y3</span> <span class="o">=</span> <span class="n">x1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">x3</span>
+                <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>
+            <span class="c1"># (y1 != y2) | P != Q, P = -Q, calculamos P - P</span>
+            <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># P != +-Q, calculamos P + Q</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span><span class="p">)</span>
+            <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">m</span> <span class="o">+</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span> <span class="o">+</span> <span class="n">a</span>
+            <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">x3</span><span class="p">)</span> <span class="o">+</span> <span class="n">x3</span> <span class="o">+</span> <span class="n">y1</span>
+            <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># añadir referencia (3.27 guide to elliptic curve)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">punto</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="n">rep_binaria_k</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">k</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>  <span class="c1"># (k_t, k_{t-1},..., k_0)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">punto</span>
+
+        <span class="k">for</span> <span class="n">k_i</span> <span class="ow">in</span> <span class="n">rep_binaria_k</span><span class="p">:</span>
+            <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">Q</span>  <span class="c1"># duplicar</span>
+            <span class="k">if</span> <span class="n">k_i</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">+</span> <span class="n">P</span>  <span class="c1"># sumar</span>
+
+        <span class="k">return</span> <span class="n">Q</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">elif</span> <span class="n">entero</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="p">,</span> <span class="o">-</span><span class="n">entero</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PuntoF2mRacional</span><span class="o">.</span><span class="n">_multiplicacion_por_duplicacion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">)</span>
+
+    <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span></div>
+
+
+<div class="viewcode-block" id="curva_eliptica_sobre_Q"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.curva_eliptica_sobre_Q">[documentos]</a><span class="k">def</span> <span class="nf">curva_eliptica_sobre_Q</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Devuelve el constructor de puntos de una curva elíptica sobre los</span>
+<span class="sd">    números racionales.</span>
+
+<span class="sd">        &gt;&gt;&gt; E = curva_eliptica_sobre_Q(0, 4)  # y^2 = x^3 + 4 sobre Q</span>
+<span class="sd">        &gt;&gt;&gt; E</span>
+<span class="sd">        &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Q.&lt;locals&gt;.PuntoQRacional&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; E(0, -2)</span>
+<span class="sd">        (0,-2)</span>
+
+<span class="sd">    Los argumentos (``a``, ``b``) son los coeficientes de la ecuación</span>
+<span class="sd">    de Weierstrass simplificada: :math:`y^2 = x^3 + a x + b`. Estos valores</span>
+<span class="sd">    pueden ser bien de tipo :py:class:`int` o bien de tipo :py:class:`fractions.Fraction`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a : el coeficiente que acompaña a x en la ecuación de Weierstrass</span>
+<span class="sd">        b : el término independiente de la ecuación de Weierstrass</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        PuntoQRacional: la clase que representa los puntos de la curva elíptica.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">PuntoQRacional</span><span class="p">(</span><span class="n">PuntoRacional</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Representa un punto de una curva elíptica sobre los</span>
+<span class="sd">        números racionales.</span>
+
+<span class="sd">            &gt;&gt;&gt; E = curva_eliptica_sobre_Q(-18, -72)  # y^2 = x^3 - 18 * x - 72 sobre Q</span>
+<span class="sd">            &gt;&gt;&gt; P = E(6, 6)</span>
+<span class="sd">            &gt;&gt;&gt; type(P)</span>
+<span class="sd">            &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Q.&lt;locals&gt;.PuntoQRacional&#39;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; P</span>
+<span class="sd">            (6,6)</span>
+<span class="sd">            &gt;&gt;&gt; Q = E(Fraction(177, 4), Fraction(-2343, 8))</span>
+<span class="sd">            &gt;&gt;&gt; Q</span>
+<span class="sd">            (177/4,-2343/8)</span>
+<span class="sd">            &gt;&gt;&gt; P + Q</span>
+<span class="sd">            (28102/2601,4183750/132651)</span>
+<span class="sd">            &gt;&gt;&gt; -P</span>
+<span class="sd">            (6,-6)</span>
+<span class="sd">            &gt;&gt;&gt; 4 * P</span>
+<span class="sd">            (111795513/9759376,-1067078260371/30488290624)</span>
+
+<span class="sd">        La curva elíptica está definida por la ecuación de Weierstrass</span>
+<span class="sd">        simplificada :math:`y^2 = x^3 + a x + b`.</span>
+
+<span class="sd">        Soporta los operadores ``+``, ``-``, ``*`` con su significado habitual.</span>
+
+<span class="sd">        Los parámetros ``x``, ``y`` deben ser del tipo :py:class:`int` o</span>
+<span class="sd">        :py:class:`fractions.Fraction`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: un número racional.</span>
+<span class="sd">            y: un número racional.</span>
+
+<span class="sd">        Los elementos de ``coeficientes`` y ``discriminante`` serán del tipo</span>
+<span class="sd">        :py:class:`int` o :py:class:`fractions.Fraction` según se haya llamado</span>
+<span class="sd">        a :func:`.curva_eliptica_sobre_Q`.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            coeficientes (Tuple): los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</span>
+<span class="sd">            discriminante: El discriminate de la curva elíptica. (atributo de clase)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coeficientes</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">discriminante</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="k">def</span> <span class="nf">contiene</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Comprueba si el punto (x, y) pertenece a la curva elíptica.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                a : un número racional.</span>
+<span class="sd">                b : un número racional.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                bool: verdadero o falso.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">coeficientes</span>
+            <span class="n">lado_izquierdo_ecuacion</span> <span class="o">=</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">lado_derecho_ecuacion</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+            <span class="k">return</span> <span class="n">lado_izquierdo_ecuacion</span> <span class="o">==</span> <span class="n">lado_derecho_ecuacion</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">contiene</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">Fraction</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># para aceptar también int</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">Fraction</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El punto ({0}, {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span>
+                                    <span class="s2">&quot; no pertenece a la curva.&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">False</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">other</span>
+            <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">a</span>
+
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">y1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">x1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">y1</span><span class="p">)</span>
+                    <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x1</span>
+                    <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">-</span> <span class="n">y1</span>
+                    <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
+                <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span>
+                <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">-</span> <span class="n">y1</span>
+                <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+            <span class="n">producto</span> <span class="o">=</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">entero</span><span class="p">):</span>
+                <span class="n">producto</span> <span class="o">+=</span> <span class="bp">self</span>
+            <span class="k">return</span> <span class="n">producto</span>
+
+        <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
+
+    <span class="n">discriminante</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">a</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">27</span> <span class="o">*</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">discriminante</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El discriminant, 4a^3 + 27b^2, no puede ser cero.&quot;</span><span class="p">)</span>
+
+    <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">discriminante</span> <span class="o">=</span> <span class="n">discriminante</span>
+    <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">coeficientes</span> <span class="o">=</span> <span class="n">EcuacionWeierstrass</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PuntoQRacional</span></div>
+
+
+<span class="c1"># TODO: remover clase tras realizar documentación</span>
+<div class="viewcode-block" id="PuntoQRacional"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.PuntoQRacional">[documentos]</a><span class="k">class</span> <span class="nc">PuntoQRacional</span><span class="p">(</span><span class="n">PuntoRacional</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representa un punto de una curva elíptica sobre los</span>
+<span class="sd">    números racionales.</span>
+
+<span class="sd">        &gt;&gt;&gt; E = curva_eliptica_sobre_Q(-18, -72)  # y^2 = x^3 - 18 * x - 72 sobre Q</span>
+<span class="sd">        &gt;&gt;&gt; P = E(6, 6)</span>
+<span class="sd">        &gt;&gt;&gt; type(P)</span>
+<span class="sd">        &lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Q.&lt;locals&gt;.PuntoQRacional&#39;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; P</span>
+<span class="sd">        (6,6)</span>
+<span class="sd">        &gt;&gt;&gt; Q = E(Fraction(177, 4), Fraction(-2343, 8))</span>
+<span class="sd">        &gt;&gt;&gt; Q</span>
+<span class="sd">        (177/4,-2343/8)</span>
+<span class="sd">        &gt;&gt;&gt; P + Q</span>
+<span class="sd">        (28102/2601,4183750/132651)</span>
+<span class="sd">        &gt;&gt;&gt; -P</span>
+<span class="sd">        (6,-6)</span>
+<span class="sd">        &gt;&gt;&gt; 4 * P</span>
+<span class="sd">        (111795513/9759376,-1067078260371/30488290624)</span>
+
+<span class="sd">    La curva elíptica está definida por la ecuación de Weierstrass</span>
+<span class="sd">    simplificada :math:`y^2 = x^3 + a x + b`.</span>
+
+<span class="sd">    Soporta los operadores ``+``, ``-``, ``*`` con su significado habitual.</span>
+
+<span class="sd">    Los parámetros ``x``, ``y`` deben ser del tipo :py:class:`int` o</span>
+<span class="sd">    :py:class:`fractions.Fraction`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: un número racional.</span>
+<span class="sd">        y: un número racional.</span>
+
+<span class="sd">    Los elementos de ``coeficientes`` y ``discriminante`` serán del tipo</span>
+<span class="sd">    :py:class:`int` o :py:class:`fractions.Fraction` según se haya llamado</span>
+<span class="sd">    a :func:`.curva_eliptica_sobre_Q`.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        coeficientes (Tuple): los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</span>
+<span class="sd">        discriminante: El discriminate de la curva elíptica. (atributo de clase)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coeficientes</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">discriminante</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="PuntoQRacional.contiene"><a class="viewcode-back" href="../curvas_elipticas.html#curvas_elipticas.PuntoQRacional.contiene">[documentos]</a>    <span class="k">def</span> <span class="nf">contiene</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Comprueba si el punto (x, y) pertenece a la curva elíptica.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            a : un número racional.</span>
+<span class="sd">            b : un número racional.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: verdadero o falso.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">coeficientes</span>
+        <span class="n">lado_izquierdo_ecuacion</span> <span class="o">=</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">lado_derecho_ecuacion</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+        <span class="k">return</span> <span class="n">lado_izquierdo_ecuacion</span> <span class="o">==</span> <span class="n">lado_derecho_ecuacion</span></div>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">contiene</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">Fraction</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># para aceptar también int</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">Fraction</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El punto ({0}, {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span>
+                                <span class="s2">&quot; no pertenece a la curva.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="n">other</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">a</span>
+
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">y1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">x1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">y1</span><span class="p">)</span>
+                <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x1</span>
+                <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">-</span> <span class="n">y1</span>
+                <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span>
+            <span class="n">x3</span> <span class="o">=</span> <span class="n">m</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span>
+            <span class="n">y3</span> <span class="o">=</span> <span class="n">m</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x3</span><span class="p">)</span> <span class="o">-</span> <span class="n">y1</span>
+            <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">y3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PuntoQRacional</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entero</span><span class="p">):</span>
+        <span class="n">producto</span> <span class="o">=</span> <span class="n">PuntoQRacional</span><span class="o">.</span><span class="n">elemento_neutro</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">entero</span><span class="p">):</span>
+            <span class="n">producto</span> <span class="o">+=</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">producto</span>
+
+    <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Adrian Ranea.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,796 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Curvas elípticas &mdash; documentación de ccepy - 0.0.1</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="documentación de ccepy - 0.0.1" href="index.html"/>
+        <link rel="prev" title="Cuerpos finitos" href="cuerpos_finitos.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ccepy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Primeros pasos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aritmetica_elemental.html">Aritmética elemental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cuerpos_finitos.html">Cuerpos finitos</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Curvas elípticas</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ccepy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Curvas elípticas</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/curvas_elipticas.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="curvas-elipticas">
+<h1>Curvas elípticas<a class="headerlink" href="#curvas-elipticas" title="Enlazar permanentemente con este título">¶</a></h1>
+<span class="target" id="module-curvas_elipticas"></span><p>Aritmética con curvas elípticas.</p>
+<p>Este módulo permite operar con el grupo de puntos de una curva elíptica.</p>
+<p>Para utilizar las funciones y las clases de este módulo, debe importarlo
+previamente:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># reemplace ... por la función/clase que desea utilizar</span>
+<span class="kn">from</span> <span class="nn">ccepy.curvas_elipticas</span> <span class="k">import</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>Para operar con puntos de una curva elíptica, use las funciones de la forma
+<code class="docutils literal"><span class="pre">curva_eliptica_sobre_*</span></code> y los operadores aritméticos habituales.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">97</span><span class="p">)</span>  <span class="c1"># y^2 = x^3 + 2x + 3 sobre F97</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span><span class="o">.</span><span class="n">coeficientes</span>
+<span class="go">Coeficientes(a=2, b=3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span>
+<span class="go">(0,10)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span>
+<span class="go">(3,6)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">+</span> <span class="n">Q</span>
+<span class="go">(85,71)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="n">P</span>
+<span class="go">(0,87)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">3</span> <span class="o">*</span> <span class="n">P</span>
+<span class="go">(23,24)</span>
+</pre></div>
+</div>
+<p>Lista de funciones y clases de <code class="docutils literal"><span class="pre">curvas_elipticas</span></code>:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#curvas_elipticas.curva_eliptica_sobre_Fq" title="curvas_elipticas.curva_eliptica_sobre_Fq"><code class="xref py py-obj docutils literal"><span class="pre">curva_eliptica_sobre_Fq</span></code></a></td>
+<td>Devuelve el constructor de puntos de una curva elíptica sobre un cuerpo finito de q elementos de característica distinta de 2 y 3.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#curvas_elipticas.PuntoFqRacional" title="curvas_elipticas.PuntoFqRacional"><code class="xref py py-obj docutils literal"><span class="pre">PuntoFqRacional</span></code></a></td>
+<td>Representa un punto de una curva elíptica sobre un cuerpo finito de q elementos de característica distinta de 2 y 3.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#curvas_elipticas.curva_eliptica_sobre_F2m" title="curvas_elipticas.curva_eliptica_sobre_F2m"><code class="xref py py-obj docutils literal"><span class="pre">curva_eliptica_sobre_F2m</span></code></a></td>
+<td>Devuelve el constructor de puntos de una curva elíptica sobre el cuerpo finito de 2**m elementos.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#curvas_elipticas.PuntoF2mRacional" title="curvas_elipticas.PuntoF2mRacional"><code class="xref py py-obj docutils literal"><span class="pre">PuntoF2mRacional</span></code></a></td>
+<td>Representa un punto de una curva elíptica sobre el cuerpo finito de 2**m elementos.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#curvas_elipticas.curva_eliptica_sobre_Q" title="curvas_elipticas.curva_eliptica_sobre_Q"><code class="xref py py-obj docutils literal"><span class="pre">curva_eliptica_sobre_Q</span></code></a></td>
+<td>Devuelve el constructor de puntos de una curva elíptica sobre los números racionales.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#curvas_elipticas.PuntoQRacional" title="curvas_elipticas.PuntoQRacional"><code class="xref py py-obj docutils literal"><span class="pre">PuntoQRacional</span></code></a></td>
+<td>Representa un punto de una curva elíptica sobre los números racionales.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#curvas_elipticas.PuntoRacional" title="curvas_elipticas.PuntoRacional"><code class="xref py py-obj docutils literal"><span class="pre">PuntoRacional</span></code></a></td>
+<td>Clase abstracta que representa un punto racional de una curva elíptica.</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="curvas_elipticas.curva_eliptica_sobre_Fq">
+<code class="descname">curva_eliptica_sobre_Fq</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>p</em>, <em>n=1</em>, <em>pol_irreducible=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#curva_eliptica_sobre_Fq"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.curva_eliptica_sobre_Fq" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Devuelve el constructor de puntos de una curva elíptica sobre
+un cuerpo finito de q elementos de característica distinta de 2 y 3.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># y^2 = x^3 + x + 1 sobre F25</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span>
+<span class="go">&lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Fq.&lt;locals&gt;.PuntoFqRacional&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">({[0, 0]; 25},{[1, 0]; 25})</span>
+</pre></div>
+</div>
+<p>Los dos primeros argumentos (<code class="docutils literal"><span class="pre">a</span></code>, <code class="docutils literal"><span class="pre">b</span></code>) son los coeficientes de la ecuación
+de Weierstrass simplificada: <span class="math">\(y^2 = x^3 + a x + b\)</span>. Estos valores
+pueden ser bien de tipo <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a> o bien de tipo <a class="reference internal" href="aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP" title="aritmetica_elemental.EnteroModuloP"><code class="xref py py-class docutils literal"><span class="pre">EnteroModuloP</span></code></a> o
+<a class="reference internal" href="cuerpos_finitos.html#cuerpos_finitos.ElementoFq" title="cuerpos_finitos.ElementoFq"><code class="xref py py-class docutils literal"><span class="pre">ElementoFq</span></code></a> según sea <code class="docutils literal"><span class="pre">n</span></code> uno o mayor que uno respectivamente.</p>
+<p>Los tres últimos argumentos (<code class="docutils literal"><span class="pre">p</span></code>, <code class="docutils literal"><span class="pre">n</span></code>, <code class="docutils literal"><span class="pre">pol_irreducible</span></code>) definen el cuerpo
+finito de p**n elementos sobre el que se define la curva eliptipca.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; el coeficiente que acompaña a x en la ecuación de Weierstrass</li>
+<li><strong>b</strong> &#8211; el término independiente de la ecuación de Weierstrass</li>
+<li><strong>p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; un número primo.</li>
+<li><strong>n</strong> (<em>Optional[int]</em>) &#8211; un número natural.</li>
+<li><strong>pol_irreducible</strong> (<em>Optional[PolinomioZp]</em>) &#8211; un polinomio de grado
+<em>n</em> irreducible.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">la clase que representa los puntos de la curva elíptica.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last"><a class="reference internal" href="#curvas_elipticas.PuntoFqRacional" title="curvas_elipticas.PuntoFqRacional">PuntoFqRacional</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="curvas_elipticas.PuntoFqRacional">
+<em class="property">class </em><code class="descname">PuntoFqRacional</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#PuntoFqRacional"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Representa un punto de una curva elíptica sobre un cuerpo finito de
+q elementos de característica distinta de 2 y 3.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># y^2 = x^3 + x + 1 sobre F25</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F25</span> <span class="o">=</span> <span class="n">Fq</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="n">F25</span><span class="o">.</span><span class="n">cero</span><span class="p">(),</span> <span class="n">F25</span><span class="o">.</span><span class="n">uno</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="go">&lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Fq.&lt;locals&gt;.PuntoFqRacional&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span>
+<span class="go">({[0, 0]; 25},{[1, 0]; 25})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="n">F25</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">F25</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span>
+<span class="go">({[4, 0]; 25},{[2, 0]; 25})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">+</span> <span class="n">Q</span>
+<span class="go">({[2, 0]; 25},{[1, 0]; 25})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="n">P</span>
+<span class="go">({[0, 0]; 25},{[4, 0]; 25})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">4</span> <span class="o">*</span> <span class="n">P</span>
+<span class="go">({[3, 0]; 25},{[4, 0]; 25})</span>
+</pre></div>
+</div>
+<p>La curva elíptica está definida por la ecuación de Weierstrass
+simplificada <span class="math">\(y^2 = x^3 + a x + b\)</span>.</p>
+<p>Soporta los operadores <code class="docutils literal"><span class="pre">+</span></code>, <code class="docutils literal"><span class="pre">-</span></code>, <code class="docutils literal"><span class="pre">*</span></code> con su significado habitual.</p>
+<p>Los parámetros <code class="docutils literal"><span class="pre">x</span></code>, <code class="docutils literal"><span class="pre">y</span></code> deben ser del tipo <a class="reference internal" href="aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP" title="aritmetica_elemental.EnteroModuloP"><code class="xref py py-class docutils literal"><span class="pre">EnteroModuloP</span></code></a> o
+<a class="reference internal" href="cuerpos_finitos.html#cuerpos_finitos.ElementoFq" title="cuerpos_finitos.ElementoFq"><code class="xref py py-class docutils literal"><span class="pre">ElementoFq</span></code></a> según el cuerpo finito tenga un número primo de
+elementos o un número potencia de un primo de elementos. Para construir
+elementos de estos tipos, utilice <a class="reference internal" href="cuerpos_finitos.html#cuerpos_finitos.Fq" title="cuerpos_finitos.Fq"><code class="xref py py-func docutils literal"><span class="pre">Fq()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; un elemento del cuerpo finito de q elementos.</li>
+<li><strong>y</strong> &#8211; un elemento del cuerpo finito de q elementos.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Los elementos de <code class="docutils literal"><span class="pre">coeficientes</span></code> y <code class="docutils literal"><span class="pre">discriminante</span></code> serán del tipo
+<a class="reference internal" href="aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP" title="aritmetica_elemental.EnteroModuloP"><code class="xref py py-class docutils literal"><span class="pre">EnteroModuloP</span></code></a> o <a class="reference internal" href="cuerpos_finitos.html#cuerpos_finitos.ElementoFq" title="cuerpos_finitos.ElementoFq"><code class="xref py py-class docutils literal"><span class="pre">ElementoFq</span></code></a> según el cuerpo finito
+tenga un número primo de elementos o un número potencia de un primo de
+elementos.</p>
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoFqRacional.coeficientes">
+<code class="descname">coeficientes</code><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional.coeficientes" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><em>Tuple</em> &#8211; los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoFqRacional.discriminante">
+<code class="descname">discriminante</code><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional.discriminante" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>El discriminate de la curva elíptica. (atributo de clase)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoFqRacional.Fq">
+<code class="descname">Fq</code><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional.Fq" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>El constructor de elementos del cuerpo finito de q elementos. (atributo de clase)</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="curvas_elipticas.PuntoFqRacional.contiene">
+<em class="property">classmethod </em><code class="descname">contiene</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#PuntoFqRacional.contiene"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional.contiene" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Comprueba si el punto (x, y) pertenece a la curva elíptica.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; un elemento del cuerpo finito de q elementos.</li>
+<li><strong>b</strong> &#8211; un elemento del cuerpo finito de q elementos.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">verdadero o falso.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(en Python versión 3.5)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="curvas_elipticas.PuntoFqRacional.elemento_neutro">
+<code class="descname">elemento_neutro</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional.elemento_neutro" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Devuelve el elemento neutro.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Devuelve:</th><td class="field-body">El elemento neutro.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="curvas_elipticas.PuntoFqRacional.es_elemento_neutro">
+<code class="descname">es_elemento_neutro</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional.es_elemento_neutro" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Comprueba si es el elemento neutro (el punto del infinito).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Devuelve:</th><td class="field-body">verdadero o falso.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(en Python versión 3.5)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoFqRacional.x">
+<code class="descname">x</code><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional.x" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>La componente x del punto si no es el elemento neutro. Es un
+atributo de solo lectura.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoFqRacional.y">
+<code class="descname">y</code><a class="headerlink" href="#curvas_elipticas.PuntoFqRacional.y" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>La componente y del punto si no es el elemento neutro. Es un
+atributo de solo lectura.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="curvas_elipticas.curva_eliptica_sobre_F2m">
+<code class="descname">curva_eliptica_sobre_F2m</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>m</em>, <em>pol_irreducible=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#curva_eliptica_sobre_F2m"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.curva_eliptica_sobre_F2m" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Devuelve el constructor de puntos de una curva elíptica sobre
+el cuerpo finito de 2**m elementos.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pol_irreducible</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F16</span> <span class="o">=</span> <span class="n">Fq</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">F16</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">F16</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_F2m</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span>
+<span class="go">&lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_F2m.&lt;locals&gt;.PuntoF2mRacional&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span><span class="p">(</span><span class="n">F16</span><span class="o">.</span><span class="n">uno</span><span class="p">(),</span> <span class="n">F16</span><span class="o">.</span><span class="n">uno</span><span class="p">())</span>
+<span class="go">({[1, 0, 0, 0]; 16},{[1, 0, 0, 0]; 16})</span>
+</pre></div>
+</div>
+<p>Los dos primeros argumentos (<code class="docutils literal"><span class="pre">a</span></code>, <code class="docutils literal"><span class="pre">b</span></code>) son los coeficientes de la ecuación
+de Weierstrass simplificada: <span class="math">\(y^2 + x y = x^3 + a x^2 + b\)</span>. Estos valores
+pueden ser bien de tipo <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a> o bien de tipo <a class="reference internal" href="aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP" title="aritmetica_elemental.EnteroModuloP"><code class="xref py py-class docutils literal"><span class="pre">EnteroModuloP</span></code></a> o
+<a class="reference internal" href="cuerpos_finitos.html#cuerpos_finitos.ElementoFq" title="cuerpos_finitos.ElementoFq"><code class="xref py py-class docutils literal"><span class="pre">ElementoFq</span></code></a> según sea <code class="docutils literal"><span class="pre">n</span></code> uno o mayor que uno respectivamente.</p>
+<p>Los dos últimos argumentos (<code class="docutils literal"><span class="pre">m</span></code>, <code class="docutils literal"><span class="pre">pol_irreducible</span></code>) definen el cuerpo
+finito de 2**m elementos sobre el que se define la curva eliptipca.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; el coeficiente que acompaña a x^2 en la ecuación de Weierstrass</li>
+<li><strong>b</strong> &#8211; el término independiente de la ecuación de Weierstrass</li>
+<li><strong>m</strong> (<em>[int]</em>) &#8211; un número natural.</li>
+<li><strong>pol_irreducible</strong> (<em>Optional[PolinomioZp]</em>) &#8211; un polinomio de grado
+<em>m</em> irreducible.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">la clase que representa los puntos de la curva elíptica.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last"><a class="reference internal" href="#curvas_elipticas.PuntoF2mRacional" title="curvas_elipticas.PuntoF2mRacional">PuntoF2mRacional</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="curvas_elipticas.PuntoF2mRacional">
+<em class="property">class </em><code class="descname">PuntoF2mRacional</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#PuntoF2mRacional"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Representa un punto de una curva elíptica sobre el cuerpo finito de
+2**m elementos.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pol_irreducible</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">F16</span> <span class="o">=</span> <span class="n">Fq</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">F16</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">F16</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_F2m</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span><span class="o">.</span><span class="n">coeficientes</span>
+<span class="go">Coeficientes(a={[0, 0, 0, 1]; 16}, b={[1, 0, 0, 1]; 16})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="n">F16</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">F16</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="go">&lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_F2m.&lt;locals&gt;.PuntoF2mRacional&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span>
+<span class="go">({[0, 1, 0, 0]; 16},{[1, 1, 1, 1]; 16})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="n">F16</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">F16</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span>
+<span class="go">({[0, 0, 1, 1]; 16},{[0, 0, 1, 1]; 16})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">+</span> <span class="n">Q</span>
+<span class="go">({[1, 0, 0, 0]; 16},{[1, 0, 0, 0]; 16})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="n">P</span>
+<span class="go">({[0, 1, 0, 0]; 16},{[1, 0, 1, 1]; 16})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">2</span> <span class="o">*</span> <span class="n">P</span>
+<span class="go">({[1, 1, 0, 1]; 16},{[0, 1, 0, 0]; 16})</span>
+</pre></div>
+</div>
+<p>La curva elíptica está definida por la ecuación de Weierstrass
+simplificada <span class="math">\(y^2 + x y = x^3 + a x^2 + b\)</span>.</p>
+<p>Soporta los operadores <code class="docutils literal"><span class="pre">+</span></code>, <code class="docutils literal"><span class="pre">-</span></code>, <code class="docutils literal"><span class="pre">*</span></code> con su significado habitual.</p>
+<p>Los parámetros <code class="docutils literal"><span class="pre">x</span></code>, <code class="docutils literal"><span class="pre">y</span></code> deben ser del tipo <a class="reference internal" href="aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP" title="aritmetica_elemental.EnteroModuloP"><code class="xref py py-class docutils literal"><span class="pre">EnteroModuloP</span></code></a> o
+<a class="reference internal" href="cuerpos_finitos.html#cuerpos_finitos.ElementoFq" title="cuerpos_finitos.ElementoFq"><code class="xref py py-class docutils literal"><span class="pre">ElementoFq</span></code></a> según m sea uno o mayor que uno. Para construir
+elementos de estos tipos, utilice <a class="reference internal" href="cuerpos_finitos.html#cuerpos_finitos.Fq" title="cuerpos_finitos.Fq"><code class="xref py py-func docutils literal"><span class="pre">Fq()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; un elemento del cuerpo finito de 2**m elementos.</li>
+<li><strong>y</strong> &#8211; un elemento del cuerpo finito de 2**m elementos.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Los elementos de <code class="docutils literal"><span class="pre">coeficientes</span></code> y <code class="docutils literal"><span class="pre">discriminante</span></code> serán del tipo
+<a class="reference internal" href="aritmetica_elemental.html#aritmetica_elemental.EnteroModuloP" title="aritmetica_elemental.EnteroModuloP"><code class="xref py py-class docutils literal"><span class="pre">EnteroModuloP</span></code></a> o <a class="reference internal" href="cuerpos_finitos.html#cuerpos_finitos.ElementoFq" title="cuerpos_finitos.ElementoFq"><code class="xref py py-class docutils literal"><span class="pre">ElementoFq</span></code></a> según m sea uno o
+mayor que uno.</p>
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoF2mRacional.coeficientes">
+<code class="descname">coeficientes</code><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional.coeficientes" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><em>Tuple</em> &#8211; los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoF2mRacional.discriminante">
+<code class="descname">discriminante</code><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional.discriminante" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>El discriminate de la curva elíptica. (atributo de clase)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoF2mRacional.Fq">
+<code class="descname">Fq</code><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional.Fq" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>El constructor de elementos del cuerpo finito de 2**m elementos. (atributo de clase)</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="curvas_elipticas.PuntoF2mRacional.contiene">
+<em class="property">classmethod </em><code class="descname">contiene</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#PuntoF2mRacional.contiene"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional.contiene" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Comprueba si el punto (x, y) pertenece a la curva elíptica.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; un elemento del cuerpo finito de 2**m elementos.</li>
+<li><strong>b</strong> &#8211; un elemento del cuerpo finito de 2**m elementos.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">verdadero o falso.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(en Python versión 3.5)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="curvas_elipticas.PuntoF2mRacional.elemento_neutro">
+<code class="descname">elemento_neutro</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional.elemento_neutro" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Devuelve el elemento neutro.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Devuelve:</th><td class="field-body">El elemento neutro.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="curvas_elipticas.PuntoF2mRacional.es_elemento_neutro">
+<code class="descname">es_elemento_neutro</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional.es_elemento_neutro" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Comprueba si es el elemento neutro (el punto del infinito).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Devuelve:</th><td class="field-body">verdadero o falso.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(en Python versión 3.5)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoF2mRacional.x">
+<code class="descname">x</code><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional.x" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>La componente x del punto si no es el elemento neutro. Es un
+atributo de solo lectura.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoF2mRacional.y">
+<code class="descname">y</code><a class="headerlink" href="#curvas_elipticas.PuntoF2mRacional.y" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>La componente y del punto si no es el elemento neutro. Es un
+atributo de solo lectura.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="curvas_elipticas.curva_eliptica_sobre_Q">
+<code class="descname">curva_eliptica_sobre_Q</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#curva_eliptica_sobre_Q"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.curva_eliptica_sobre_Q" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Devuelve el constructor de puntos de una curva elíptica sobre los
+números racionales.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Q</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># y^2 = x^3 + 4 sobre Q</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span>
+<span class="go">&lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Q.&lt;locals&gt;.PuntoQRacional&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">(0,-2)</span>
+</pre></div>
+</div>
+<p>Los argumentos (<code class="docutils literal"><span class="pre">a</span></code>, <code class="docutils literal"><span class="pre">b</span></code>) son los coeficientes de la ecuación
+de Weierstrass simplificada: <span class="math">\(y^2 = x^3 + a x + b\)</span>. Estos valores
+pueden ser bien de tipo <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a> o bien de tipo <a class="reference external" href="https://docs.python.org/3/library/fractions.html#fractions.Fraction" title="(en Python versión 3.5)"><code class="xref py py-class docutils literal"><span class="pre">fractions.Fraction</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; el coeficiente que acompaña a x en la ecuación de Weierstrass</li>
+<li><strong>b</strong> &#8211; el término independiente de la ecuación de Weierstrass</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">la clase que representa los puntos de la curva elíptica.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last"><a class="reference internal" href="#curvas_elipticas.PuntoQRacional" title="curvas_elipticas.PuntoQRacional">PuntoQRacional</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="curvas_elipticas.PuntoQRacional">
+<em class="property">class </em><code class="descname">PuntoQRacional</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#PuntoQRacional"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.PuntoQRacional" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Representa un punto de una curva elíptica sobre los
+números racionales.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Q</span><span class="p">(</span><span class="o">-</span><span class="mi">18</span><span class="p">,</span> <span class="o">-</span><span class="mi">72</span><span class="p">)</span>  <span class="c1"># y^2 = x^3 - 18 * x - 72 sobre Q</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+<span class="go">&lt;class &#39;ccepy.curvas_elipticas.curva_eliptica_sobre_Q.&lt;locals&gt;.PuntoQRacional&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span>
+<span class="go">(6,6)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="n">Fraction</span><span class="p">(</span><span class="mi">177</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">Fraction</span><span class="p">(</span><span class="o">-</span><span class="mi">2343</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span>
+<span class="go">(177/4,-2343/8)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">+</span> <span class="n">Q</span>
+<span class="go">(28102/2601,4183750/132651)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="n">P</span>
+<span class="go">(6,-6)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">4</span> <span class="o">*</span> <span class="n">P</span>
+<span class="go">(111795513/9759376,-1067078260371/30488290624)</span>
+</pre></div>
+</div>
+<p>La curva elíptica está definida por la ecuación de Weierstrass
+simplificada <span class="math">\(y^2 = x^3 + a x + b\)</span>.</p>
+<p>Soporta los operadores <code class="docutils literal"><span class="pre">+</span></code>, <code class="docutils literal"><span class="pre">-</span></code>, <code class="docutils literal"><span class="pre">*</span></code> con su significado habitual.</p>
+<p>Los parámetros <code class="docutils literal"><span class="pre">x</span></code>, <code class="docutils literal"><span class="pre">y</span></code> deben ser del tipo <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a> o
+<a class="reference external" href="https://docs.python.org/3/library/fractions.html#fractions.Fraction" title="(en Python versión 3.5)"><code class="xref py py-class docutils literal"><span class="pre">fractions.Fraction</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; un número racional.</li>
+<li><strong>y</strong> &#8211; un número racional.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Los elementos de <code class="docutils literal"><span class="pre">coeficientes</span></code> y <code class="docutils literal"><span class="pre">discriminante</span></code> serán del tipo
+<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a> o <a class="reference external" href="https://docs.python.org/3/library/fractions.html#fractions.Fraction" title="(en Python versión 3.5)"><code class="xref py py-class docutils literal"><span class="pre">fractions.Fraction</span></code></a> según se haya llamado
+a <a class="reference internal" href="#curvas_elipticas.curva_eliptica_sobre_Q" title="curvas_elipticas.curva_eliptica_sobre_Q"><code class="xref py py-func docutils literal"><span class="pre">curva_eliptica_sobre_Q()</span></code></a>.</p>
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoQRacional.coeficientes">
+<code class="descname">coeficientes</code><a class="headerlink" href="#curvas_elipticas.PuntoQRacional.coeficientes" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><em>Tuple</em> &#8211; los coeficientes (a, b) de la ecuación de Weierstrass. (atributo de clase)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoQRacional.discriminante">
+<code class="descname">discriminante</code><a class="headerlink" href="#curvas_elipticas.PuntoQRacional.discriminante" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>El discriminate de la curva elíptica. (atributo de clase)</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="curvas_elipticas.PuntoQRacional.contiene">
+<em class="property">classmethod </em><code class="descname">contiene</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#PuntoQRacional.contiene"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.PuntoQRacional.contiene" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Comprueba si el punto (x, y) pertenece a la curva elíptica.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; un número racional.</li>
+<li><strong>b</strong> &#8211; un número racional.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">verdadero o falso.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(en Python versión 3.5)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="curvas_elipticas.PuntoQRacional.elemento_neutro">
+<code class="descname">elemento_neutro</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#curvas_elipticas.PuntoQRacional.elemento_neutro" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Devuelve el elemento neutro.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Devuelve:</th><td class="field-body">El elemento neutro.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="curvas_elipticas.PuntoQRacional.es_elemento_neutro">
+<code class="descname">es_elemento_neutro</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#curvas_elipticas.PuntoQRacional.es_elemento_neutro" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Comprueba si es el elemento neutro (el punto del infinito).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Devuelve:</th><td class="field-body">verdadero o falso.</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(en Python versión 3.5)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoQRacional.x">
+<code class="descname">x</code><a class="headerlink" href="#curvas_elipticas.PuntoQRacional.x" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>La componente x del punto si no es el elemento neutro. Es un
+atributo de solo lectura.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="curvas_elipticas.PuntoQRacional.y">
+<code class="descname">y</code><a class="headerlink" href="#curvas_elipticas.PuntoQRacional.y" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>La componente y del punto si no es el elemento neutro. Es un
+atributo de solo lectura.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="curvas_elipticas.PuntoRacional">
+<em class="property">class </em><code class="descname">PuntoRacional</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/curvas_elipticas.html#PuntoRacional"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#curvas_elipticas.PuntoRacional" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Clase abstracta que representa un punto racional de una curva elíptica.
+El resto de las clases <code class="docutils literal"><span class="pre">Punto*Racional</span></code> heredan de esta.</p>
+<p>Esta clase no se puede instanciar. Sirve como punto de partida para
+crear curvas elípticas sobre nuevos cuerpos.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="cuerpos_finitos.html" class="btn btn-neutral" title="Cuerpos finitos" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Adrian Ranea.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -84,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../intro.html">Primeros pasos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../aritmetica_elemental.html">Aritmética elemental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cuerpos_finitos.html">Cuerpos finitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../curvas_elipticas.html">Curvas elípticas</a></li>
 </ul>
 
             
@@ -256,12 +257,14 @@
             <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeficientes</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># probamos a ver si coeficientes es del tipo PolinomioZp</span>
-                <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="c1"># es una lista de int</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="n">coeficientes</span><span class="p">],</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># PolinomioZp o ElementoFq</span>
+                <span class="n">pol</span> <span class="o">=</span> <span class="n">coeficientes</span>
+
             <span class="n">coeficientes_nuevos</span> <span class="o">=</span> <span class="p">(</span><span class="n">pol</span> <span class="o">%</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">pol_irreducible</span><span class="p">)</span><span class="o">.</span><span class="n">coeficientes</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">coeficientes_nuevos</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
 
@@ -291,7 +294,6 @@
         <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
 
         <span class="c1"># TODO: añadir ref al square-and-multiply del Handbook</span>
-        <span class="c1"># TODO: ver que pasa cuando k &gt;  p^m -1</span>
         <span class="nd">@classmethod</span>
         <span class="k">def</span> <span class="nf">_exponenciacion_binaria</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Calcula la potencia k-ésima del elemento g eficientemente.</span>
@@ -318,10 +320,11 @@
                     <span class="n">s</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">s</span>
             <span class="k">return</span> <span class="n">s</span>
 
-        <span class="c1"># TODO: es cierto que g^q == g^1 para cualquier g en ElementoFq? (para el 0 no)</span>
         <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">cero</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">uno</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">cero</span><span class="p">():</span>
                 <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">uno</span><span class="p">()</span> <span class="ow">or</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">uno</span><span class="p">()</span>
 
             <span class="n">q</span> <span class="o">=</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">q</span>
             <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -370,6 +373,7 @@
     <span class="k">return</span> <span class="n">ElementoFq</span></div>
 
 
+<span class="c1"># TODO: remover clase tras realizar documentación</span>
 <div class="viewcode-block" id="ElementoFq"><a class="viewcode-back" href="../cuerpos_finitos.html#cuerpos_finitos.ElementoFq">[documentos]</a><span class="k">class</span> <span class="nc">ElementoFq</span><span class="p">(</span><span class="n">PolinomioZp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Representa un elemento del cuerpo finito con q elementos.</span>
 
@@ -428,12 +432,14 @@
         <span class="k">return</span> <span class="n">ElementoFq</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span></div>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeficientes</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># probamos a ver si coeficientes es del tipo PolinomioZp</span>
-            <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="o">.</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="c1"># es una lista de int</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">([</span><span class="n">coeficientes</span><span class="p">],</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">pol</span> <span class="o">=</span> <span class="n">PolinomioZp</span><span class="p">(</span><span class="n">coeficientes</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># PolinomioZp o ElementoFq</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="n">coeficientes</span>
+
         <span class="n">coeficientes_nuevos</span> <span class="o">=</span> <span class="p">(</span><span class="n">pol</span> <span class="o">%</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">pol_irreducible</span><span class="p">)</span><span class="o">.</span><span class="n">coeficientes</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">coeficientes_nuevos</span><span class="p">,</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
 
@@ -463,7 +469,6 @@
     <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
 
     <span class="c1"># TODO: añadir ref al square-and-multiply del Handbook</span>
-    <span class="c1"># TODO: ver que pasa cuando k &gt;  p^m -1</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_exponenciacion_binaria</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calcula la potencia k-ésima del elemento g eficientemente.</span>
@@ -490,10 +495,11 @@
                 <span class="n">s</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">s</span>
         <span class="k">return</span> <span class="n">s</span>
 
-    <span class="c1"># TODO: es cierto que g^q == g^1 para cualquier g en ElementoFq? (para el 0 no)</span>
     <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">cero</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">uno</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">cero</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">uno</span><span class="p">()</span> <span class="ow">or</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">uno</span><span class="p">()</span>
 
         <span class="n">q</span> <span class="o">=</span> <span class="n">ElementoFq</span><span class="o">.</span><span class="n">q</span>
         <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
