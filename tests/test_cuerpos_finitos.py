@@ -3,10 +3,9 @@ sys.path.append('../ccepy')
 import unittest
 # import doctest
 
-from hypothesis import given, assume  # , settings
+from hypothesis import given, assume
 from hypothesis.strategies import integers, lists, sampled_from
 
-# from ccepy import cuerpos_finitos
 from ccepy.cuerpos_finitos import Fq
 
 # TODO: decidir que hacer con los primos grandes
@@ -19,11 +18,9 @@ primos = [
 ]
 
 
-# TODO: rellenar los docstring?
 class TestElementoFpn(unittest.TestCase):
     """Conjuto de test para ElementoFpn"""
     # TODO: quitar debug
-    # @settings(perform_health_check=False)
     @given(sampled_from(primos), integers(min_value=2, max_value=3), lists(integers()),
         lists(integers()), lists(integers()))
     def test_propiedades_cuerpo(self, p, n, l1, l2, l3):
@@ -72,6 +69,7 @@ class TestElementoFpn(unittest.TestCase):
             assert x ** e / x ** f == x ** (e - f)
 
 
+# TODO: decidir si usar seed para validar docstring
 # def load_tests(loader, tests, ignore):
 #     tests.addTests(doctest.DocTestSuite(cuerpos_finitos))
 #     return tests

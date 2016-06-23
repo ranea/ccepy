@@ -4,14 +4,14 @@ import unittest
 from math import gcd
 import doctest
 
-from hypothesis import given, assume  # , settings
+from hypothesis import given, assume
 from hypothesis.strategies import integers, lists, sampled_from
 
 from ccepy import aritmetica_elemental  # para cargar los docstring
 from ccepy.aritmetica_elemental import PolinomioZp, Zp, alg_euclides, alg_euclides_polinomios
 
 
-# secuencia A000040
+# TODO: secuencia A000040
 primos = [
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
     61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131,
@@ -20,7 +20,7 @@ primos = [
 ]
 
 
-# http://mathworld.wolfram.com/IrreduciblePolynomial.html
+# TODO: http://mathworld.wolfram.com/IrreduciblePolynomial.html
 irreducibles_Z2_hasta_grado_4 = [
     PolinomioZp([1, 1], p=2),
     PolinomioZp([0, 1], p=2),
@@ -46,7 +46,7 @@ class TestEnteroModuloP(unittest.TestCase):
         t = Zq(k)
         cero = Zq(0)
         uno = Zq(1)
-        # propieadades de anillo conmutativo
+        # propiedades de anillo conmutativo
         assert x + (y + t) == (x + y) + t
         assert x + y == y + x
         assert x + cero == x == cero + x
@@ -177,8 +177,8 @@ class TestAlgoritmoExtendidoEuclides(unittest.TestCase):
             assert s.grado() <= h.grado() and t.grado() <= g.grado()
 
 
-# Añade los ejemplos de los docstring
 def load_tests(loader, tests, ignore):
+    """Añade los ejemplos insertados en los docstring."""
     tests.addTests(doctest.DocTestSuite(aritmetica_elemental))
     return tests
 
