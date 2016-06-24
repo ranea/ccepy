@@ -13,7 +13,7 @@ Lista de funciones y clases de ``aritmetica_elemental``:
 
 .. autosummary::
     :nosignatures:
-    
+
     Zp
     EnteroModuloP
     PolinomioZp

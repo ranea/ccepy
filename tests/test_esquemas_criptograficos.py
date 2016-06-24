@@ -30,16 +30,15 @@ class TestECDH(unittest.TestCase):
         #                                                             alicia.llave_privada))
         # print("Llaves de Bob:\n\tPública: {0}\n\tPrivada: {1}".format(bob.llave_publica,
         #                                                             bob.llave_privada))
-        alicia.calcula_secreto_compartido(bob.llave_publica)
-        bob.calcula_secreto_compartido(alicia.llave_publica)
+        secreto_alicia = alicia.calcula_secreto_compartido(bob.llave_publica)
+        secreto_bob = bob.calcula_secreto_compartido(alicia.llave_publica)
         # print("Secreto compartido calculado por:\n\tAlicia: {0}\n\tBob: {1}".format(alicia.secreto_compartido,
         #                                                                             bob.secreto_compartido))
-        assert alicia.secreto_compartido == bob.secreto_compartido
+        assert secreto_alicia == secreto_bob
 
         eva = ECDH(E, generador, orden)  # eva impersona a alicia
         assume(eva.llave_privada != alicia.llave_privada)
-        eva.calcula_secreto_compartido(bob.llave_publica)
-        assert eva.secreto_compartido != alicia.secreto_compartido
+        assert secreto_alicia != eva.calcula_secreto_compartido(bob.llave_publica)
 
 
 class TestECDSA(unittest.TestCase):
@@ -93,24 +92,27 @@ if __name__ == '__main__':
     #                                                                             bob.secreto_compartido))
     # print("¿Es el mismo secreto? {0}".format(alicia.secreto_compartido == bob.secreto_compartido))
 
-    # E = curva_eliptica_sobre_Fq(a=5, b=7, p=113)
-    # generador = E(16, 51)
-    #
-    # def orden_punto_curva_eliptica(punto):
-    #     i = 1
-    #     P = 1 * punto  # una copia
-    #     for j in range(1, 128):
-    #         if P.es_elemento_neutro():
-    #             return i
-    #         P += punto
-    #         i += 1
-    #
-    # orden = orden_punto_curva_eliptica(generador)
-    # mensaje = "It is possible to write endlessly on elliptic curves."
-    # alicia = ECDSA(E, generador, orden)
-    # bob = ECDSA(E, generador, orden)
-    #
-    # r, s = alicia.firma(mensaje)
-    # print(bob.verifica(mensaje, r, s, alicia.llave_publica))
+    E = curva_eliptica_sobre_Fq(a=5, b=7, p=113)
+    generador = E(16, 51)
 
-    unittest.main()
+    def orden_punto_curva_eliptica(punto):
+        i = 1
+        P = 1 * punto  # una copia
+        for j in range(1, 128):
+            if P.es_elemento_neutro():
+                return i
+            P += punto
+            i += 1
+
+    print(orden_punto_curva_eliptica(generador))
+    orden = orden_punto_curva_eliptica(generador)
+    mensaje = "It is possible to write endlessly on elliptic curves."
+    alicia = ECDSA(E, generador, orden)
+    print(alicia.llave_publica, alicia.llave_privada)
+    bob = ECDSA(E, generador, orden)
+
+    r, s = alicia.firma(mensaje)
+    print(r, s)
+    print(bob.verifica(mensaje, r, s, alicia.llave_publica))
+
+    # unittest.main()
