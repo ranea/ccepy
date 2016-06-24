@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Esquemas criptográficos &mdash; documentación de ccepy - 0.0.1</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="documentación de ccepy - 0.0.1" href="index.html"/>
+        <link rel="prev" title="Curvas elípticas" href="curvas_elipticas.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ccepy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Primeros pasos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aritmetica_elemental.html">Aritmética elemental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cuerpos_finitos.html">Cuerpos finitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="curvas_elipticas.html">Curvas elípticas</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Esquemas criptográficos</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ccepy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Esquemas criptográficos</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/esquemas_criptograficos.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="esquemas-criptograficos">
+<h1>Esquemas criptográficos<a class="headerlink" href="#esquemas-criptograficos" title="Enlazar permanentemente con este título">¶</a></h1>
+<span class="target" id="module-esquemas_criptograficos"></span><p>Esquemas criptográficos con curvas elípticas.</p>
+<p>Este módulo permite trabajar con protocolos criptográficos asimétricos,
+como el esquema Diffie-Hellman conocido como ECDH o el algoritmo
+de firmas digitales conocido como ECDSA.</p>
+<p>Para utilizar las funciones y las clases de este módulo, debe importarlo
+previamente:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># reemplace ... por la función/clase que desea utilizar</span>
+<span class="kn">from</span> <span class="nn">ccepy.esquemas_criptograficos</span> <span class="k">import</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>Para trabajar con un protocolo, basta iniciar las entidades involucradas
+y llamar a los métodos correspondientes. Veamos un ejemplo con EDCH:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos los parámetros</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">324</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1287</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3851</span><span class="p">)</span>  <span class="c1"># y^2 = x^3 + a x + b sobre Fp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">generador</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="mi">920</span><span class="p">,</span> <span class="mi">303</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orden_generador</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos los participantes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden_generador</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden_generador</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># la pareja de llaves se genera automáticamente</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span>
+<span class="go">(2373,2607)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_privada</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">calcula_secreto_compartido</span><span class="p">(</span><span class="n">bob</span><span class="o">.</span><span class="n">llave_publica</span><span class="p">)</span>
+<span class="go">1136</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">calcula_secreto_compartido</span><span class="p">(</span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span><span class="p">)</span>
+<span class="go">1136</span>
+</pre></div>
+</div>
+<p>Lista de esquemas criptográficos:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#esquemas_criptograficos.ECDH" title="esquemas_criptograficos.ECDH"><code class="xref py py-obj docutils literal"><span class="pre">ECDH</span></code></a></td>
+<td>Representa un participante del protocolo ECDH.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#esquemas_criptograficos.ECDSA" title="esquemas_criptograficos.ECDSA"><code class="xref py py-obj docutils literal"><span class="pre">ECDSA</span></code></a></td>
+<td>Representa un participante del protocolo ECDSA.</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="esquemas_criptograficos.ECDH">
+<em class="property">class </em><code class="descname">ECDH</code><span class="sig-paren">(</span><em>curva_eliptica</em>, <em>generador</em>, <em>orden</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/esquemas_criptograficos.html#ECDH"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#esquemas_criptograficos.ECDH" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Representa un participante del protocolo ECDH.</p>
+<p>El protocolo Diffie-Hellman para curvas elípticas o ECDH es un protocolo
+de establecimiento de llaves, esto es, permite a dos entidades establecer
+un secreto compartido sobre un canal inseguro. Para ello se cálcula
+un punto secreto de una curva elíptica que solo es conocido por
+las entidades involucradas.</p>
+<p>Veamos un ejemplo de la creación de un participante:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos los parámetros</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">324</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1287</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3851</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">generador</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="mi">920</span><span class="p">,</span> <span class="mi">303</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orden_generador</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos el participante</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden_generador</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># la pareja de llaves se genera automáticamente</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span>
+<span class="go">(2373,2607)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_privada</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<p>Una vez se tienen dos participantes, se puede establecer un
+secreto compartido llamando a <a class="reference internal" href="#esquemas_criptograficos.ECDH.calcula_secreto_compartido" title="esquemas_criptograficos.ECDH.calcula_secreto_compartido"><code class="xref py py-meth docutils literal"><span class="pre">calcula_secreto_compartido()</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden_generador</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">calcula_secreto_compartido</span><span class="p">(</span><span class="n">bob</span><span class="o">.</span><span class="n">llave_publica</span><span class="p">)</span>
+<span class="go">1136</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">calcula_secreto_compartido</span><span class="p">(</span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span><span class="p">)</span>
+<span class="go">1136</span>
+</pre></div>
+</div>
+<p>Para la inicialización de un participante es necesario pasarle
+como primer argumento una curva elíptica. Para ello puede
+usar las funciones del tipo <code class="docutils literal"><span class="pre">curva_eliptica_sobre_*</span></code> del módulo
+<a class="reference internal" href="curvas_elipticas.html#module-curvas_elipticas" title="curvas_elipticas"><code class="xref py py-mod docutils literal"><span class="pre">curvas_elipticas</span></code></a>.</p>
+<p>Además, en la inicialización se genera un par de llaves pública y privada
+de forma aleatoria. Si quiere utilizar un par concreto, basta
+machacar el valor de <a class="reference internal" href="#esquemas_criptograficos.ECDH.llave_privada" title="esquemas_criptograficos.ECDH.llave_privada"><code class="xref py py-attr docutils literal"><span class="pre">llave_privada</span></code></a> y <a class="reference internal" href="#esquemas_criptograficos.ECDH.llave_publica" title="esquemas_criptograficos.ECDH.llave_publica"><code class="xref py py-attr docutils literal"><span class="pre">llave_publica</span></code></a>
+tras la inicialización. La única restricción es que la
+llave pública sea la multiplicación escalar de la llave privada
+por el generador:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eva</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden_generador</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eva</span><span class="o">.</span><span class="n">llave_privada</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eva</span><span class="o">.</span><span class="n">llave_publica</span> <span class="o">=</span> <span class="n">eva</span><span class="o">.</span><span class="n">generador</span> <span class="o">*</span> <span class="n">eva</span><span class="o">.</span><span class="n">llave_privada</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curva_eliptica</strong> &#8211; el contructor de puntos de una curva elíptica.</li>
+<li><strong>generador</strong> &#8211; un punto de la curva elíptica.</li>
+<li><strong>orden</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; el orden del generador.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDH.curva_eliptica">
+<code class="descname">curva_eliptica</code><a class="headerlink" href="#esquemas_criptograficos.ECDH.curva_eliptica" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>el constructor de puntos de una curva elíptica.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDH.generador">
+<code class="descname">generador</code><a class="headerlink" href="#esquemas_criptograficos.ECDH.generador" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>un punto de la curva elíptica.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDH.orden">
+<code class="descname">orden</code><a class="headerlink" href="#esquemas_criptograficos.ECDH.orden" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><em>int</em> &#8211; el orden del generador.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDH.llave_privada">
+<code class="descname">llave_privada</code><a class="headerlink" href="#esquemas_criptograficos.ECDH.llave_privada" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><em>int</em> &#8211; un entero que hace de llave privada del participante.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDH.llave_publica">
+<code class="descname">llave_publica</code><a class="headerlink" href="#esquemas_criptograficos.ECDH.llave_publica" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>un punto de la curva elíptica que hace de llave pública
+del participante.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="esquemas_criptograficos.ECDH.calcula_secreto_compartido">
+<code class="descname">calcula_secreto_compartido</code><span class="sig-paren">(</span><em>otra_llave_publica</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/esquemas_criptograficos.html#ECDH.calcula_secreto_compartido"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#esquemas_criptograficos.ECDH.calcula_secreto_compartido" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Devuelve el punto de la curva elíptica que hace de
+secreto compartido.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><strong>otra_llave_publica</strong> &#8211; la llave pública del otro participante.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body">el secreto compartido.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="esquemas_criptograficos.ECDSA">
+<em class="property">class </em><code class="descname">ECDSA</code><span class="sig-paren">(</span><em>curva_eliptica</em>, <em>generador</em>, <em>orden</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/esquemas_criptograficos.html#ECDSA"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#esquemas_criptograficos.ECDSA" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Representa un participante del protocolo ECDSA.</p>
+<p>El algoritmo de firmas digitales para curvas elípticas o ECDSA
+es un esquema de firmado análogo al esquema DSA pero utilizando
+la multiplicación escalar de una curva elíptica en vez de la
+exponenciación modular.</p>
+<p>Veamos un ejemplo de la creación del participante que hará de firmador:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos los parámetros</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">113</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">generador</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orden_generador</span> <span class="o">=</span> <span class="mi">127</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos el participante</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden_generador</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># la pareja de llaves se genera automáticamente</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span>
+<span class="go">(14,83)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_privada</span>
+<span class="go">32</span>
+</pre></div>
+</div>
+<p>Para firmar, basta llamar al método <a class="reference internal" href="#esquemas_criptograficos.ECDSA.firma" title="esquemas_criptograficos.ECDSA.firma"><code class="xref py py-meth docutils literal"><span class="pre">firma()</span></code></a> pasándole el
+mensaje que se desea firmar:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">alicia</span><span class="o">.</span><span class="n">firma</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="p">,</span> <span class="n">s</span>
+<span class="go">13, 73</span>
+</pre></div>
+</div>
+<p>Para que otra entidad compruebe la firma, basta llamar a
+<a class="reference internal" href="#esquemas_criptograficos.ECDSA.verifica" title="esquemas_criptograficos.ECDSA.verifica"><code class="xref py py-meth docutils literal"><span class="pre">verifica()</span></code></a> pasándole como argumentos el mensaje,
+la firma y la llave pública del firmador:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">ECDSA</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">verifica</span><span class="p">(</span><span class="n">mensaje</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Para la inicialización de un participante es necesario pasarle
+como primer argumento una curva elíptica sobre un cuerpo finito
+de orden un primo (no una potencia de un primo). Para ello puede
+usar la función <a class="reference internal" href="curvas_elipticas.html#curvas_elipticas.curva_eliptica_sobre_Fq" title="curvas_elipticas.curva_eliptica_sobre_Fq"><code class="xref py py-func docutils literal"><span class="pre">curva_eliptica_sobre_Fq()</span></code></a> (del módulo
+<a class="reference internal" href="curvas_elipticas.html#module-curvas_elipticas" title="curvas_elipticas"><code class="xref py py-mod docutils literal"><span class="pre">curvas_elipticas</span></code></a>) paśandole como argumento <code class="docutils literal"><span class="pre">n=1</span></code></p>
+<p>Además, en la inicialización se genera un par de llaves pública y privada
+de forma aleatoria. Si quiere utilizar un par concreto, basta
+machacar el valor de <a class="reference internal" href="#esquemas_criptograficos.ECDSA.llave_privada" title="esquemas_criptograficos.ECDSA.llave_privada"><code class="xref py py-attr docutils literal"><span class="pre">llave_privada</span></code></a> y <a class="reference internal" href="#esquemas_criptograficos.ECDSA.llave_publica" title="esquemas_criptograficos.ECDSA.llave_publica"><code class="xref py py-attr docutils literal"><span class="pre">llave_publica</span></code></a>
+tras la inicialización. La única restricción es que la
+llave pública sea la multiplicación escalar de la llave privada
+por el generador:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eva</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden_generador</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eva</span><span class="o">.</span><span class="n">llave_privada</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eva</span><span class="o">.</span><span class="n">llave_publica</span> <span class="o">=</span> <span class="n">eva</span><span class="o">.</span><span class="n">generador</span> <span class="o">*</span> <span class="n">eva</span><span class="o">.</span><span class="n">llave_privada</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curva_eliptica</strong> &#8211; el contructor de puntos de una curva elíptica.</li>
+<li><strong>generador</strong> &#8211; un punto de la curva elíptica.</li>
+<li><strong>orden</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; el orden del generador.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDSA.curva_eliptica">
+<code class="descname">curva_eliptica</code><a class="headerlink" href="#esquemas_criptograficos.ECDSA.curva_eliptica" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>el constructor de puntos de una curva elíptica.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDSA.generador">
+<code class="descname">generador</code><a class="headerlink" href="#esquemas_criptograficos.ECDSA.generador" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>un punto de la curva elíptica.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDSA.orden">
+<code class="descname">orden</code><a class="headerlink" href="#esquemas_criptograficos.ECDSA.orden" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><em>int</em> &#8211; el orden del generador.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDSA.llave_privada">
+<code class="descname">llave_privada</code><a class="headerlink" href="#esquemas_criptograficos.ECDSA.llave_privada" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><em>int</em> &#8211; un entero que hace de llave privada del participante.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="esquemas_criptograficos.ECDSA.llave_publica">
+<code class="descname">llave_publica</code><a class="headerlink" href="#esquemas_criptograficos.ECDSA.llave_publica" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>un punto de la curva elíptica que hace de llave pública
+del participante.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="esquemas_criptograficos.ECDSA.firma">
+<code class="descname">firma</code><span class="sig-paren">(</span><em>mensaje</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/esquemas_criptograficos.html#ECDSA.firma"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#esquemas_criptograficos.ECDSA.firma" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Firma el mensaje utilizando la llave pública del participante.</p>
+<p>No se firma todo el mensaje, sino que previo al firmado
+se le aplica la función hash <code class="docutils literal"><span class="pre">SHA-1</span></code> (del módulo <a class="reference external" href="https://docs.python.org/3/library/hashlib.html#module-hashlib" title="(en Python versión 3.5)"><code class="xref py py-mod docutils literal"><span class="pre">hashlib</span></code></a>)
+al mensaje y se firma sobre dicho hash.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><strong>mensaje</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(en Python versión 3.5)"><em>str</em></a>) &#8211; el mensaje que se desea firmar.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body">el par <code class="docutils literal"><span class="pre">(r,</span> <span class="pre">s)</span></code> que forma la firma del mensaje.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Tuple[int]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="esquemas_criptograficos.ECDSA.verifica">
+<code class="descname">verifica</code><span class="sig-paren">(</span><em>mensaje</em>, <em>r</em>, <em>s</em>, <em>llave_publica_firmador</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/esquemas_criptograficos.html#ECDSA.verifica"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#esquemas_criptograficos.ECDSA.verifica" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Comprueba la firma de un mensaje.</p>
+<p>No se firma todo el mensaje, sino que previo al firmado
+se le aplica la función hash <code class="docutils literal"><span class="pre">SHA-1</span></code> (del módulo <a class="reference external" href="https://docs.python.org/3/library/hashlib.html#module-hashlib" title="(en Python versión 3.5)"><code class="xref py py-mod docutils literal"><span class="pre">hashlib</span></code></a>)
+al mensaje y se firma sobre dicho hash.</p>
+<p>Los parámetros <code class="docutils literal"><span class="pre">(r,</span> <span class="pre">s)</span></code> es el par que devuelve el método
+<a class="reference internal" href="#esquemas_criptograficos.ECDSA.firma" title="esquemas_criptograficos.ECDSA.firma"><code class="xref py py-meth docutils literal"><span class="pre">firma()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first simple">
+<li><strong>mensaje</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(en Python versión 3.5)"><em>str</em></a>) &#8211; el mensaje que se desea comprobar su firma.</li>
+<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; la primera componente de la firma.</li>
+<li><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; la segunda componente de la firma.</li>
+<li><strong>llave_publica_firmador</strong> &#8211; la llave pública del firmado.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Devuelve:</th><td class="field-body"><p class="first">verdadero o falso.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Tipo del valor devuelto:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(en Python versión 3.5)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="curvas_elipticas.html" class="btn btn-neutral" title="Curvas elípticas" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Adrian Ranea.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

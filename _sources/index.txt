@@ -12,6 +12,7 @@ Contenidos:
    aritmetica_elemental
    cuerpos_finitos
    curvas_elipticas
+   esquemas_criptograficos
 
 .. .. currentmodule:: sphinx
 
@@ -22,6 +23,7 @@ Lista de módulos:
    aritmetica_elemental
    cuerpos_finitos
    curvas_elipticas
+   esquemas_criptograficos
 
 .. Índices y tablas
 .. ================

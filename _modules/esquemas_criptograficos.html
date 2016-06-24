@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>esquemas_criptograficos &mdash; documentación de ccepy - 0.0.1</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="documentación de ccepy - 0.0.1" href="../index.html"/>
+        <link rel="up" title="Código de módulo" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ccepy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Primeros pasos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aritmetica_elemental.html">Aritmética elemental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cuerpos_finitos.html">Cuerpos finitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../curvas_elipticas.html">Curvas elípticas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../esquemas_criptograficos.html">Esquemas criptográficos</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">ccepy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Código de módulo</a> &raquo;</li>
+      
+    <li>esquemas_criptograficos</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Código fuente para esquemas_criptograficos</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Esquemas criptográficos con curvas elípticas.</span>
+
+<span class="sd">Este módulo permite trabajar con protocolos criptográficos asimétricos,</span>
+<span class="sd">como el esquema Diffie-Hellman conocido como ECDH o el algoritmo</span>
+<span class="sd">de firmas digitales conocido como ECDSA.</span>
+
+<span class="sd">Para utilizar las funciones y las clases de este módulo, debe importarlo</span>
+<span class="sd">previamente: ::</span>
+
+<span class="sd">    # reemplace ... por la función/clase que desea utilizar</span>
+<span class="sd">    from ccepy.esquemas_criptograficos import ...</span>
+
+<span class="sd">Para trabajar con un protocolo, basta iniciar las entidades involucradas</span>
+<span class="sd">y llamar a los métodos correspondientes. Veamos un ejemplo con EDCH:</span>
+
+<span class="sd">    &gt;&gt;&gt; # definimos los parámetros</span>
+<span class="sd">    &gt;&gt;&gt; E = curva_eliptica_sobre_Fq(a=324, b=1287, p=3851)  # y^2 = x^3 + a x + b sobre Fp</span>
+<span class="sd">    &gt;&gt;&gt; generador = E(920, 303)</span>
+<span class="sd">    &gt;&gt;&gt; orden_generador = 8</span>
+<span class="sd">    &gt;&gt;&gt; # definimos los participantes</span>
+<span class="sd">    &gt;&gt;&gt; alicia = ECDH(E, generador, orden_generador)</span>
+<span class="sd">    &gt;&gt;&gt; bob = ECDH(E, generador, orden_generador)</span>
+<span class="sd">    &gt;&gt;&gt; # la pareja de llaves se genera automáticamente</span>
+<span class="sd">    &gt;&gt;&gt; alicia.llave_publica</span>
+<span class="sd">    (2373,2607)</span>
+<span class="sd">    &gt;&gt;&gt; alicia.llave_privada</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; alicia.calcula_secreto_compartido(bob.llave_publica)</span>
+<span class="sd">    1136</span>
+<span class="sd">    &gt;&gt;&gt; bob.calcula_secreto_compartido(alicia.llave_publica)</span>
+<span class="sd">    1136</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="c1"># from math import gcd</span>
+
+<span class="c1"># from ccepy.cuerpos_finitos import Fq</span>
+<span class="kn">from</span> <span class="nn">ccepy.curvas_elipticas</span> <span class="kn">import</span> <span class="n">curva_eliptica_sobre_Fq</span>
+<span class="kn">from</span> <span class="nn">ccepy.aritmetica_elemental</span> <span class="kn">import</span> <span class="n">Zp</span><span class="p">,</span> <span class="n">alg_euclides</span>
+
+
+<span class="c1"># añadir ref: sec 1 3.3</span>
+<div class="viewcode-block" id="ECDH"><a class="viewcode-back" href="../esquemas_criptograficos.html#esquemas_criptograficos.ECDH">[documentos]</a><span class="k">class</span> <span class="nc">ECDH</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representa un participante del protocolo ECDH.</span>
+
+<span class="sd">    El protocolo Diffie-Hellman para curvas elípticas o ECDH es un protocolo</span>
+<span class="sd">    de establecimiento de llaves, esto es, permite a dos entidades establecer</span>
+<span class="sd">    un secreto compartido sobre un canal inseguro. Para ello se cálcula</span>
+<span class="sd">    un punto secreto de una curva elíptica que solo es conocido por</span>
+<span class="sd">    las entidades involucradas.</span>
+
+<span class="sd">    Veamos un ejemplo de la creación de un participante:</span>
+
+<span class="sd">        &gt;&gt;&gt; # definimos los parámetros</span>
+<span class="sd">        &gt;&gt;&gt; E = curva_eliptica_sobre_Fq(a=324, b=1287, p=3851)</span>
+<span class="sd">        &gt;&gt;&gt; generador = E(920, 303)</span>
+<span class="sd">        &gt;&gt;&gt; orden_generador = 8</span>
+<span class="sd">        &gt;&gt;&gt; # definimos el participante</span>
+<span class="sd">        &gt;&gt;&gt; alicia = ECDH(E, generador, orden_generador)</span>
+<span class="sd">        &gt;&gt;&gt; # la pareja de llaves se genera automáticamente</span>
+<span class="sd">        &gt;&gt;&gt; alicia.llave_publica</span>
+<span class="sd">        (2373,2607)</span>
+<span class="sd">        &gt;&gt;&gt; alicia.llave_privada</span>
+<span class="sd">        2</span>
+
+<span class="sd">    Una vez se tienen dos participantes, se puede establecer un</span>
+<span class="sd">    secreto compartido llamando a :meth:`calcula_secreto_compartido`:</span>
+
+<span class="sd">        &gt;&gt;&gt; bob = ECDH(E, generador, orden_generador)</span>
+<span class="sd">        &gt;&gt;&gt; alicia.calcula_secreto_compartido(bob.llave_publica)</span>
+<span class="sd">        1136</span>
+<span class="sd">        &gt;&gt;&gt; bob.calcula_secreto_compartido(alicia.llave_publica)</span>
+<span class="sd">        1136</span>
+
+<span class="sd">    Para la inicialización de un participante es necesario pasarle</span>
+<span class="sd">    como primer argumento una curva elíptica. Para ello puede</span>
+<span class="sd">    usar las funciones del tipo ``curva_eliptica_sobre_*`` del módulo</span>
+<span class="sd">    :mod:`curvas_elipticas`.</span>
+
+<span class="sd">    Además, en la inicialización se genera un par de llaves pública y privada</span>
+<span class="sd">    de forma aleatoria. Si quiere utilizar un par concreto, basta</span>
+<span class="sd">    machacar el valor de :attr:`llave_privada` y :attr:`llave_publica`</span>
+<span class="sd">    tras la inicialización. La única restricción es que la</span>
+<span class="sd">    llave pública sea la multiplicación escalar de la llave privada</span>
+<span class="sd">    por el generador:</span>
+
+<span class="sd">        &gt;&gt;&gt; eva = ECDH(E, generador, orden_generador)</span>
+<span class="sd">        &gt;&gt;&gt; eva.llave_privada = 3</span>
+<span class="sd">        &gt;&gt;&gt; eva.llave_publica = eva.generador * eva.llave_privada</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        curva_eliptica: el contructor de puntos de una curva elíptica.</span>
+<span class="sd">        generador: un punto de la curva elíptica.</span>
+<span class="sd">        orden(int): el orden del generador.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        curva_eliptica: el constructor de puntos de una curva elíptica.</span>
+<span class="sd">        generador: un punto de la curva elíptica.</span>
+<span class="sd">        orden(int): el orden del generador.</span>
+<span class="sd">        llave_privada(int): un entero que hace de llave privada del participante.</span>
+<span class="sd">        llave_publica: un punto de la curva elíptica que hace de llave pública</span>
+<span class="sd">            del participante.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curva_eliptica</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curva_eliptica</span> <span class="o">=</span> <span class="n">curva_eliptica</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generador</span> <span class="o">=</span> <span class="n">generador</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orden</span> <span class="o">=</span> <span class="n">orden</span>
+
+        <span class="c1"># generamos las llaves</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llave_privada</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orden</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llave_publica</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llave_privada</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">generador</span>
+
+<div class="viewcode-block" id="ECDH.calcula_secreto_compartido"><a class="viewcode-back" href="../esquemas_criptograficos.html#esquemas_criptograficos.ECDH.calcula_secreto_compartido">[documentos]</a>    <span class="k">def</span> <span class="nf">calcula_secreto_compartido</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otra_llave_publica</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Devuelve el punto de la curva elíptica que hace de</span>
+<span class="sd">        secreto compartido.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            otra_llave_publica: la llave pública del otro participante.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            el secreto compartido.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">llave_privada</span> <span class="o">*</span> <span class="n">otra_llave_publica</span><span class="p">)</span><span class="o">.</span><span class="n">x</span></div></div>
+
+
+<div class="viewcode-block" id="ECDSA"><a class="viewcode-back" href="../esquemas_criptograficos.html#esquemas_criptograficos.ECDSA">[documentos]</a><span class="k">class</span> <span class="nc">ECDSA</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Representa un participante del protocolo ECDSA.</span>
+
+<span class="sd">    El algoritmo de firmas digitales para curvas elípticas o ECDSA</span>
+<span class="sd">    es un esquema de firmado análogo al esquema DSA pero utilizando</span>
+<span class="sd">    la multiplicación escalar de una curva elíptica en vez de la</span>
+<span class="sd">    exponenciación modular.</span>
+
+<span class="sd">    Veamos un ejemplo de la creación del participante que hará de firmador:</span>
+
+<span class="sd">        &gt;&gt;&gt; # definimos los parámetros</span>
+<span class="sd">        &gt;&gt;&gt; E = curva_eliptica_sobre_Fq(a=5, b=7, p=113)</span>
+<span class="sd">        &gt;&gt;&gt; generador = E(16, 51)</span>
+<span class="sd">        &gt;&gt;&gt; orden_generador = 127</span>
+<span class="sd">        &gt;&gt;&gt; # definimos el participante</span>
+<span class="sd">        &gt;&gt;&gt; alicia = ECDH(E, generador, orden_generador)</span>
+<span class="sd">        &gt;&gt;&gt; # la pareja de llaves se genera automáticamente</span>
+<span class="sd">        &gt;&gt;&gt; alicia.llave_publica</span>
+<span class="sd">        (14,83)</span>
+<span class="sd">        &gt;&gt;&gt; alicia.llave_privada</span>
+<span class="sd">        32</span>
+
+<span class="sd">    Para firmar, basta llamar al método :meth:`firma` pasándole el</span>
+<span class="sd">    mensaje que se desea firmar:</span>
+
+<span class="sd">        &gt;&gt;&gt; r, s = alicia.firma(mensaje)</span>
+<span class="sd">        &gt;&gt;&gt; r, s</span>
+<span class="sd">        13, 73</span>
+
+<span class="sd">    Para que otra entidad compruebe la firma, basta llamar a</span>
+<span class="sd">    :meth:`verifica` pasándole como argumentos el mensaje,</span>
+<span class="sd">    la firma y la llave pública del firmador:</span>
+
+<span class="sd">        &gt;&gt;&gt; bob = ECDSA(E, generador, orden)</span>
+<span class="sd">        &gt;&gt;&gt; bob.verifica(mensaje, r, s, alicia.llave_publica)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    Para la inicialización de un participante es necesario pasarle</span>
+<span class="sd">    como primer argumento una curva elíptica sobre un cuerpo finito</span>
+<span class="sd">    de orden un primo (no una potencia de un primo). Para ello puede</span>
+<span class="sd">    usar la función :func:`.curva_eliptica_sobre_Fq` (del módulo</span>
+<span class="sd">    :mod:`curvas_elipticas`) paśandole como argumento ``n=1``</span>
+
+<span class="sd">    Además, en la inicialización se genera un par de llaves pública y privada</span>
+<span class="sd">    de forma aleatoria. Si quiere utilizar un par concreto, basta</span>
+<span class="sd">    machacar el valor de :attr:`llave_privada` y :attr:`llave_publica`</span>
+<span class="sd">    tras la inicialización. La única restricción es que la</span>
+<span class="sd">    llave pública sea la multiplicación escalar de la llave privada</span>
+<span class="sd">    por el generador:</span>
+
+<span class="sd">        &gt;&gt;&gt; eva = ECDH(E, generador, orden_generador)</span>
+<span class="sd">        &gt;&gt;&gt; eva.llave_privada = 3</span>
+<span class="sd">        &gt;&gt;&gt; eva.llave_publica = eva.generador * eva.llave_privada</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        curva_eliptica: el contructor de puntos de una curva elíptica.</span>
+<span class="sd">        generador: un punto de la curva elíptica.</span>
+<span class="sd">        orden(int): el orden del generador.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        curva_eliptica: el constructor de puntos de una curva elíptica.</span>
+<span class="sd">        generador: un punto de la curva elíptica.</span>
+<span class="sd">        orden(int): el orden del generador.</span>
+<span class="sd">        llave_privada(int): un entero que hace de llave privada del participante.</span>
+<span class="sd">        llave_publica: un punto de la curva elíptica que hace de llave pública</span>
+<span class="sd">            del participante.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curva_eliptica</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">curva_eliptica</span><span class="o">.</span><span class="n">Fq</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;El cardinal del cuerpo finito debe ser un número primo.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">curva_eliptica</span> <span class="o">=</span> <span class="n">curva_eliptica</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generador</span> <span class="o">=</span> <span class="n">generador</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orden</span> <span class="o">=</span> <span class="n">orden</span>  <span class="c1"># debe ser primo</span>
+
+        <span class="c1"># generamos las llaves</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llave_privada</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orden</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llave_publica</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llave_privada</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">generador</span>
+
+    <span class="c1"># TODO: ref 4.29 guide</span>
+<div class="viewcode-block" id="ECDSA.firma"><a class="viewcode-back" href="../esquemas_criptograficos.html#esquemas_criptograficos.ECDSA.firma">[documentos]</a>    <span class="k">def</span> <span class="nf">firma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mensaje</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Firma el mensaje utilizando la llave pública del participante.</span>
+
+<span class="sd">        No se firma todo el mensaje, sino que previo al firmado</span>
+<span class="sd">        se le aplica la función hash ``SHA-1`` (del módulo :mod:`hashlib`)</span>
+<span class="sd">        al mensaje y se firma sobre dicho hash.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mensaje(str): el mensaje que se desea firmar.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[int]: el par ``(r, s)`` que forma la firma del mensaje.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># renombramos las variables para usar la notación de la referencia</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generador</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orden</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llave_privada</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">mensaje</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orden</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">kP</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="n">P</span>
+
+            <span class="n">Zn</span> <span class="o">=</span> <span class="n">Zp</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">Zn</span><span class="p">(</span><span class="n">kP</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">hash_mensaje</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">hash_mensaje</span><span class="p">[:</span><span class="n">n</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+
+            <span class="n">inverso_k</span> <span class="o">=</span> <span class="n">Zn</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">inverso_k</span> <span class="o">*</span> <span class="p">(</span><span class="n">e</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO: ref 4.30 guide</span>
+<div class="viewcode-block" id="ECDSA.verifica"><a class="viewcode-back" href="../esquemas_criptograficos.html#esquemas_criptograficos.ECDSA.verifica">[documentos]</a>    <span class="k">def</span> <span class="nf">verifica</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mensaje</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">llave_publica_firmador</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Comprueba la firma de un mensaje.</span>
+
+<span class="sd">        No se firma todo el mensaje, sino que previo al firmado</span>
+<span class="sd">        se le aplica la función hash ``SHA-1`` (del módulo :mod:`hashlib`)</span>
+<span class="sd">        al mensaje y se firma sobre dicho hash.</span>
+
+<span class="sd">        Los parámetros ``(r, s)`` es el par que devuelve el método</span>
+<span class="sd">        :meth:`firma`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mensaje(str): el mensaje que se desea comprobar su firma.</span>
+<span class="sd">            r(int): la primera componente de la firma.</span>
+<span class="sd">            s(int): la segunda componente de la firma.</span>
+<span class="sd">            llave_publica_firmador: la llave pública del firmado.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: verdadero o falso.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># renombramos las variables para usar la notación de la referencia</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generador</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orden</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">llave_publica_firmador</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">mensaje</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">r</span> <span class="o">&lt;=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="n">hash_mensaje</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">hash_mensaje</span><span class="p">[:</span><span class="n">n</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()],</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+
+        <span class="n">Zn</span> <span class="o">=</span> <span class="n">Zp</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">Zn</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">inverso</span><span class="p">()</span>
+        <span class="n">u1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">e</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span>
+        <span class="n">u2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="n">u1</span> <span class="o">*</span> <span class="n">P</span> <span class="o">+</span> <span class="n">u2</span> <span class="o">*</span> <span class="n">Q</span>
+
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">es_elemento_neutro</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="n">v</span> <span class="o">=</span> <span class="n">Zn</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Adrian Ranea.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
