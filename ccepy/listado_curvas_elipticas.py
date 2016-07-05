@@ -1,3 +1,40 @@
+"""Listado de curvas elípticas.
+
+Este módulo ofrece una serie de curvas elípticas listas para utilizar.
+Estas curvas se han sacado de varios estándares.
+
+Para utilizar las curvas aquí listadas, debe importar la función
+:func:`parametros_dominio` ::
+
+    from ccepy.listado_curvas_elipticas import parametros_dominio
+
+Para trabajar con una curva, basta llamar a esta función pasándole
+como parámetro el nombre de la curva a utilizar:
+
+    >>> E, P, n = parametros_dominio("secp256k1")
+    >>> E  # la curva elíptica
+    ccepy.curvas_elipticas.curva_eliptica_sobre_Fq.<locals>.PuntoFqRacional
+    >>> E.Fq.p  # el numero de elementos del cuerpo finito
+    115792089237316195423570985008687907853269984665640564039457584007908834671663
+    >>> E.coeficientes
+    Coeficientes(a=0, b=7)
+    >>> P  # un punto de E
+    (55066263022277343669578718895168534326250603453777594175500187360389116729240,32670510020758816978083085130507043184471273380659243275938904335757337482424)
+    >>> n  # el orden del punto P
+    115792089237316195423570985008687907852837564279074904382605163141518161494337
+
+Los nombres de las curvas disponibles son:
+
+- Anomalous
+- NIST P-224
+- BN(2,254)
+- brainpoolP256t1
+- ANSSI FRP256v1
+- NIST P-256
+- secp256k1
+- brainpoolP384t1
+- NIST P-384
+"""
 from collections import namedtuple
 
 
@@ -7,16 +44,16 @@ from ccepy.curvas_elipticas import curva_eliptica_sobre_Fq
 ParametrosCurvaElipticaSobreFq = namedtuple('CurvaElípticaSobreFq', ['nombre', 'p', 'a', 'b', 'x1', 'y1', 'orden'])
 
 
-# TODO: ref safecurves
+# Listado de curvas
 curvas_eliptipcas_sobre_Fq_famosas = [
     ParametrosCurvaElipticaSobreFq(
-        "Anomalous",
-        17676318486848893030961583018778670610489016512983351739677143,
-        15347898055371580590890576721314318823207531963035637503096292,
-        7444386449934505970367865204569124728350661870959593404279615,
-        1619092589586542907492569170434842128165755668543894279235270,
-        3436949547626524920645513316569700140535482973634182925459687,
-        17676318486848893030961583018778670610489016512983351739677143,
+        "Anomalous",  # nombre
+        17676318486848893030961583018778670610489016512983351739677143,  # p
+        15347898055371580590890576721314318823207531963035637503096292,  # a
+        7444386449934505970367865204569124728350661870959593404279615,  # b
+        1619092589586542907492569170434842128165755668543894279235270,  # x1
+        3436949547626524920645513316569700140535482973634182925459687,  # y1
+        17676318486848893030961583018778670610489016512983351739677143,  # orden
     ),
     ParametrosCurvaElipticaSobreFq(
         "NIST P-224",
@@ -94,9 +131,48 @@ curvas_eliptipcas_sobre_Fq_famosas = [
 
 
 def procesar_parametros_curva_eliptica(parametros_curva_eliptica):
-    """..."""
     ce = parametros_curva_eliptica
     E = curva_eliptica_sobre_Fq(ce.a, ce.b, ce.p)
     generador = E(ce.x1, ce.y1)
     orden = ce.orden
     return E, generador, orden
+
+
+def parametros_dominio(nombre):
+    """Devuelve los parámetros de dominio de una curva en el listado.:
+
+        >>> E, P, n = parametros_dominio("secp256k1")
+        >>> E.Fq.p
+        115792089237316195423570985008687907853269984665640564039457584007908834671663
+        >>> E.coeficientes
+        Coeficientes(a=0, b=7)
+        >>> P
+        (55066263022277343669578718895168534326250603453777594175500187360389116729240,32670510020758816978083085130507043184471273380659243275938904335757337482424)
+        >>> n
+        115792089237316195423570985008687907852837564279074904382605163141518161494337
+
+    Los nombres de las curvas en el listado son:
+
+    - Anomalous
+    - NIST P-224
+    - BN(2,254)
+    - brainpoolP256t1
+    - ANSSI FRP256v1
+    - NIST P-256
+    - secp256k1
+    - brainpoolP384t1
+    - NIST P-384
+
+    Args:
+        nombre (str): uno de los nombres de la lista de arriba.
+
+    Returns:
+        Tuple: una tupla (E, P, n) donde E es una curva elítipca, P un punto
+        y n el orden de P. Si no existe ninguna curva con dicho nombre,
+        se devuelve ``None``.
+    """
+    for param_dominio in curvas_eliptipcas_sobre_Fq_famosas:
+        if param_dominio.nombre == nombre:
+            return procesar_parametros_curva_eliptica(param_dominio)
+    else:
+        return None

@@ -32,7 +32,6 @@ import functools
 from ccepy.aritmetica_elemental import Zp, PolinomioZp, alg_euclides_polinomios
 
 
-# TODO: explicar en algun lado esto
 @functools.lru_cache()
 def Fq(p, n=1, pol_irreducible=None):
     """Devuelve el constructor de elementos del cuerpo finito con p**n elementos.
@@ -43,7 +42,7 @@ def Fq(p, n=1, pol_irreducible=None):
         >>> F16([0, 0, 0, 0, 1])
         {[1, 0, 0, 1]; 16}
 
-    Se puede espeficiar el polinomio con el cual se hace módulo:
+    Se puede especificar el polinomio con el cual se hace módulo:
 
         >>> pol_irreducible = PolinomioZp([1, 1, 1, 0, 1], p=2)
         >>> pol_irreducible
@@ -67,6 +66,7 @@ def Fq(p, n=1, pol_irreducible=None):
     if n == 1:
         return Zp(p)
 
+    # Copiar la clase fuera de la función para que aparezca en la documentación
     class ElementoFq(PolinomioZp):
         """Representa un elemento del cuerpo finito con q elementos.
 
@@ -161,7 +161,6 @@ def Fq(p, n=1, pol_irreducible=None):
 
         __rmul__ = __mul__
 
-        # TODO: añadir ref al square-and-multiply del Handbook
         @classmethod
         def _exponenciacion_binaria(cls, g, k):
             """Calcula la potencia k-ésima del elemento g eficientemente.
@@ -336,7 +335,6 @@ class ElementoFq(PolinomioZp):
 
     __rmul__ = __mul__
 
-    # TODO: añadir ref al square-and-multiply del Handbook
     @classmethod
     def _exponenciacion_binaria(cls, g, k):
         """Calcula la potencia k-ésima del elemento g eficientemente.

@@ -48,8 +48,6 @@ import math
 import copy
 import random
 
-
-# TODO: añadir referencia Handbook of applied cryptography?
 def alg_euclides(a, b):
     """Calcula el algoritmo extendido de Euclides para enteros.
 
@@ -67,7 +65,7 @@ def alg_euclides(a, b):
         List[int]: la lista [x, y, d].
     """
     if b > a:
-        y, x, d = alg_euclides(b, a)  # Intercambiamos x e y de lugar
+        y, x, d = alg_euclides(b, a)  # Intercambiamos x, y
     else:
         if b == 0:
             d, x, y = a, 1, 0
@@ -82,8 +80,6 @@ def alg_euclides(a, b):
     return x, y, d
 
 
-# TODO: añadir referencia Handbook of applied cryptography?
-# TODO: eliminar debug
 def alg_euclides_polinomios(g, h, p):
     """Calcula el algoritmo extendido de Euclides para polinomios.
 
@@ -112,15 +108,12 @@ def alg_euclides_polinomios(g, h, p):
     hh = PolinomioZp(h.coeficientes, p)
     cero = PolinomioZp([0], p)
     uno = PolinomioZp([1], p)
-    # print(">>> INICIO ALG_EU\n\tg: {0}\n\th: {1}".format(gg, hh))
     if hh == cero:
         d, s, t = gg, uno, cero
     else:
         s2, s1, t2, t1 = uno, cero, cero, uno
         while hh != cero:
-            # print(">>> DIVISION ENTRE \n\tgg: {0}\n\thh: {1}".format(gg, hh))
             q, r = divmod(gg, hh)
-            # print(">>> FIN DIVISION \n\tq: {0}\n\tr: {1}".format(q, r))
             s, t = s2 - q * s1, t2 - q * t1
             gg, hh = hh, r
             s2, s1, t2, t1 = s1, s, t1, t
@@ -133,10 +126,8 @@ def alg_euclides_polinomios(g, h, p):
     return s, t, d
 
 
-# TODO: explicar en algun lado esto
 @functools.lru_cache()
 def Zp(p):
-    # No documentar aquí la clase
     """Devuelve el constructor de enteros módulo un primo p.
 
         >>> Z2 = Zp(2)
@@ -151,6 +142,7 @@ def Zp(p):
     Return:
         EnteroModuloP: la clase que representa los enteros módulo un primo p.
     """
+    # Copiar la clase fuera de la función para que aparezca en la documentación
     class EnteroModuloP(int):
         """Representa un entero módulo un primo p.
 
@@ -207,6 +199,10 @@ def Zp(p):
                 raise RuntimeError("Instancie usando la función Zp()")
             return super().__new__(cls, entero % EnteroModuloP.p)
 
+        # TODO: descomentar este método solo para la documentación
+        # def __init__(self, entero):
+        #    pass
+
         def __eq__(self, m):
             return super().__eq__(EnteroModuloP(m))
 
@@ -261,7 +257,7 @@ def Zp(p):
         def __rtruediv__(self, m):
             return EnteroModuloP(m).__truediv__(self)
 
-        # para functools
+        # Necesario para @lru_cache
         def __hash__(self):
             return super().__hash__()
 
@@ -327,7 +323,7 @@ class EnteroModuloP(int):
             raise RuntimeError("Instancie usando la función Zp()")
         return super().__new__(cls, entero % EnteroModuloP.p)
 
-    # TODO: borrar este método al copiarlo dentro de Zp()
+    # TODO: descomentar este método solo para la documentación
     def __init__(self, entero):
         pass
 
@@ -385,7 +381,7 @@ class EnteroModuloP(int):
     def __rtruediv__(self, m):
         return EnteroModuloP(m).__truediv__(self)
 
-    # para functools
+    # Necesario para @lru_cache
     def __hash__(self):
         return super().__hash__()
 
@@ -445,20 +441,9 @@ class PolinomioZp:
         """Devuelve el primo p."""
         return self._coeficientes[0].p
 
-    # TODO: eliminar tras debug
-    # @classmethod
-    # def cero(cls, p):
-    #     """Devuelve el polinomio cero."""
-    #     return cls([0], p)
-    #
-    # @classmethod
-    # def uno(cls):
-    #     """Devuelve el polinomio constante uno."""
-    #     return cls([1], p)
-
     @classmethod
     def monomio(cls, coef, grado, p):
-        """Devuelve el mononomio con coeficiente *coef* y de grado *grado*.
+        """Devuelve el monomio con coeficiente *coef* y de grado *grado*.
 
             >>> PolinomioZp.monomio(-1, 7, 2)
             X^7
@@ -509,9 +494,6 @@ class PolinomioZp:
         """
         return self.coeficientes[-1]
 
-    # TODO: Añadir referencia Handbook
-    # TODO: quitar debug
-    # TODO: añadir ejemplo
     def es_irreducible(self):
         """Comprueba si el polinomio es irreducible.
 
@@ -530,22 +512,15 @@ class PolinomioZp:
             f = f / PolinomioZp([f.coeficiente_lider()], p)  # lo hacemos mónico
         m = f.grado()
 
-        # print(p, "|", f, "|", m)
-
         x = PolinomioZp([0, 1], p)
         u = copy.deepcopy(x)
-        # print(m // 2 + 1)
         for i in range(1, m // 2 + 1):
             u = (u ** p) % f
-            # print("...")
             _, _, d = alg_euclides_polinomios(f, u - x, p)
-            # print(u, "|", f, "|", u - x, "|", d)
             if d != PolinomioZp([1], p):
                 return False
         return True
 
-    # TODO: quitar debug
-    # TODO: añadir ejemplo
     @classmethod
     def genera_irreducible(cls, grado, p):
         """Devuelve un polinomio irreducible de dicho grado con coeficientes
@@ -566,7 +541,6 @@ class PolinomioZp:
             coeficientes += [random.randrange(p) for i in range(1, grado)]
             coeficientes += [a_m]
             f = PolinomioZp(coeficientes, p)
-            # print(f)
             if f.es_irreducible():
                 return f
 
@@ -629,24 +603,17 @@ class PolinomioZp:
         return potencia
 
     def __divmod__(self, q):
-        # TODO: eliminar debug
         p = self.primo()
         cero = PolinomioZp([0], self.primo())
         cociente, divisor, resto = cero, copy.deepcopy(q), copy.deepcopy(self)
-        # print("\nINICIO DIVISION\np: {0}\nq: {1}".format(self, q))
-        # print("cociente: {0}\ndivisor: {1}\nresto: {2}".format(cociente, divisor, resto))
-        # print("resto != 0: {0}\nresto.grado() >= divisor.grado(): {1}\n".format(resto != cero, resto.grado() >= divisor.grado()))
         while resto != cero and resto.grado() >= divisor.grado():
             monomio_grado = resto.grado() - divisor.grado()
             monomio_cl = resto.coeficiente_lider() / divisor.coeficiente_lider()
             monomio_cociente = PolinomioZp.monomio(monomio_cl, monomio_grado, p)
-            # print("monomio_grado: {0}\nmonomio_coef_lider: {1}\nmonomio_cociente: {2}".format(monomio_grado, monomio_coef_lider, monomio_cociente))
 
             cociente += monomio_cociente
             resto -= monomio_cociente * divisor
-            # print("cociente: {0}\nresto: {1}".format(cociente, resto))
-            # print("resto != cero: {0}\nresto.grado() >= divisor.grado(): {1}\n".format(resto != cero, resto.grado() >= divisor.grado()))
-            # input()
+
         return cociente, resto
 
     def __truediv__(self, q):
@@ -667,8 +634,8 @@ class PolinomioZp:
             for indice, coef in enumerate(reversed(self.coeficientes)):
                 if coef != 0:
                     exponente = len(self.coeficientes) - indice - 1
-                    # La siguiente casuística es para evitar 1*X^1
-                    # en lugar de X y casos similares
+                    # La siguiente casuística es escribir X
+                    # en lugar de 1*X^1 y casos similares
                     if exponente == 0:
                         monomios.append(str(coef))
                     elif exponente == 1:
@@ -685,6 +652,6 @@ class PolinomioZp:
 
     __repr__ = __str__
 
-    # para functools.lru_cache de Fq
+    # Necesario para @functools.lru_cache de Fq()
     def __hash__(self):
         return hash(tuple(self.coeficientes))

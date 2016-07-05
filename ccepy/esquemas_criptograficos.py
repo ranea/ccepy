@@ -32,14 +32,11 @@ y llamar a los métodos correspondientes. Veamos un ejemplo con EDCH:
 """
 import random
 import hashlib
-# from math import gcd
 
-# from ccepy.cuerpos_finitos import Fq
 from ccepy.curvas_elipticas import curva_eliptica_sobre_Fq
 from ccepy.aritmetica_elemental import Zp, alg_euclides
 
 
-# añadir ref: sec 1 3.3
 class ECDH(object):
     """Representa un participante del protocolo ECDH.
 
@@ -89,7 +86,7 @@ class ECDH(object):
         >>> eva.llave_publica = eva.generador * eva.llave_privada
 
     Args:
-        curva_eliptica: el contructor de puntos de una curva elíptica.
+        curva_eliptica: el constructor de puntos de una curva elíptica.
         generador: un punto de la curva elíptica.
         orden(int): el orden del generador.
 
@@ -132,7 +129,7 @@ class ECDSA(object):
     la multiplicación escalar de una curva elíptica en vez de la
     exponenciación modular.
 
-    Veamos un ejemplo de la creación del participante que hará de firmador:
+    Veamos un ejemplo de la creación del participante que hará de firmante:
 
         >>> # definimos los parámetros
         >>> E = curva_eliptica_sobre_Fq(a=5, b=7, p=113)
@@ -155,7 +152,7 @@ class ECDSA(object):
 
     Para que otra entidad compruebe la firma, basta llamar a
     :meth:`verifica` pasándole como argumentos el mensaje,
-    la firma y la llave pública del firmador:
+    la firma y la llave pública del firmante:
 
         >>> bob = ECDSA(E, generador, orden)
         >>> bob.verifica(mensaje, r, s, alicia.llave_publica)
@@ -179,7 +176,7 @@ class ECDSA(object):
         >>> eva.llave_publica = eva.generador * eva.llave_privada
 
     Args:
-        curva_eliptica: el contructor de puntos de una curva elíptica.
+        curva_eliptica: el constructor de puntos de una curva elíptica.
         generador: un punto de la curva elíptica.
         orden(int): el orden del generador.
 
@@ -204,7 +201,6 @@ class ECDSA(object):
         self.llave_privada = random.randrange(1, self.orden)
         self.llave_publica = self.llave_privada * self.generador
 
-    # TODO: ref 4.29 guide
     def firma(self, mensaje):
         """Firma el mensaje utilizando la llave pública del participante.
 
@@ -218,7 +214,7 @@ class ECDSA(object):
         Returns:
             Tuple[int]: el par ``(r, s)`` que forma la firma del mensaje.
         """
-        # renombramos las variables para usar la notación de la referencia
+        # renombramos las variables
         P = self.generador
         n = self.orden
         d = self.llave_privada
@@ -243,8 +239,7 @@ class ECDSA(object):
 
             return int(r), int(s)
 
-    # TODO: ref 4.30 guide
-    def verifica(self, mensaje, r, s, llave_publica_firmador):
+    def verifica(self, mensaje, r, s, llave_publica_firmante):
         """Comprueba la firma de un mensaje.
 
         No se firma todo el mensaje, sino que previo al firmado
@@ -258,15 +253,15 @@ class ECDSA(object):
             mensaje(str): el mensaje que se desea comprobar su firma.
             r(int): la primera componente de la firma.
             s(int): la segunda componente de la firma.
-            llave_publica_firmador: la llave pública del firmado.
+            llave_publica_firmante: la llave pública del firmado.
 
         Returns:
             bool: verdadero o falso.
         """
-        # renombramos las variables para usar la notación de la referencia
+        # renombramos las variables
         P = self.generador
         n = self.orden
-        Q = llave_publica_firmador
+        Q = llave_publica_firmante
         m = mensaje
 
         if not (1 <= r <= n - 1 and 1 <= s <= n - 1):

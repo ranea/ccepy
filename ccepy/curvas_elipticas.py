@@ -65,7 +65,6 @@ class PuntoRacional(metaclass=ABCMeta):
         """
         return self._x is None or self._y is None
 
-    # TODO: explicar en algún lado el uso de property
     @property
     def x(self):
         """La componente x del punto si no es el elemento neutro. Es un
@@ -156,6 +155,7 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
     Return:
         PuntoFqRacional: la clase que representa los puntos de la curva elíptica.
     """
+    # Copiar la clase fuera de la función para que aparezca en la documentación
     class PuntoFqRacional(PuntoRacional):
         """Representa un punto de una curva elíptica sobre un cuerpo finito de
         q elementos de característica distinta de 2 y 3.
@@ -266,7 +266,6 @@ def curva_eliptica_sobre_Fq(a, b, p, n=1, pol_irreducible=None):
             else:
                 return PuntoFqRacional(self.x, -self.y)
 
-        # añadir referencia (3.27 guide to elliptic curve)
         @classmethod
         def _multiplicacion_por_duplicacion(cls, punto, k):
             """Realiza la multiplicación k * punto mediante el método de
@@ -427,7 +426,6 @@ class PuntoFqRacional(PuntoRacional):
         else:
             return PuntoFqRacional(self.x, -self.y)
 
-    # añadir referencia (3.27 guide to elliptic curve)
     @classmethod
     def _multiplicacion_por_duplicacion(cls, punto, k):
         """Realiza la multiplicación k * punto mediante el método de
@@ -486,6 +484,7 @@ def curva_eliptica_sobre_F2m(a, b, m, pol_irreducible=None):
     Return:
         PuntoF2mRacional: la clase que representa los puntos de la curva elíptica.
     """
+    # Copiar la clase fuera de la función para que aparezca en la documentación
     class PuntoF2mRacional(PuntoRacional):
         """Representa un punto de una curva elíptica sobre el cuerpo finito de
         2**m elementos.
@@ -611,7 +610,6 @@ def curva_eliptica_sobre_F2m(a, b, m, pol_irreducible=None):
             else:
                 return PuntoF2mRacional(self.x, self.x + self.y)
 
-        # añadir referencia (3.27 guide to elliptic curve)
         @classmethod
         def _multiplicacion_por_duplicacion(cls, punto, k):
             rep_binaria_k = "".join(bin(k)[2:])  # (k_t, k_{t-1},..., k_0)
@@ -773,7 +771,6 @@ class PuntoF2mRacional(PuntoRacional):
         else:
             return PuntoF2mRacional(self.x, self.x + self.y)
 
-    # añadir referencia (3.27 guide to elliptic curve)
     @classmethod
     def _multiplicacion_por_duplicacion(cls, punto, k):
         rep_binaria_k = "".join(bin(k)[2:])  # (k_t, k_{t-1},..., k_0)
@@ -819,6 +816,7 @@ def curva_eliptica_sobre_Q(a, b):
     Return:
         PuntoQRacional: la clase que representa los puntos de la curva elíptica.
     """
+    # Copiar la clase fuera de la función para que aparezca en la documentación
     class PuntoQRacional(PuntoRacional):
         """Representa un punto de una curva elíptica sobre los
         números racionales.
