@@ -86,6 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../cuerpos_finitos.html">Cuerpos finitos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../curvas_elipticas.html">Curvas elípticas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../esquemas_criptograficos.html">Esquemas criptográficos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../listado_curvas_elipticas.html">Listado de curvas elípticas</a></li>
 </ul>
 
             
@@ -165,7 +166,6 @@
 <span class="kn">from</span> <span class="nn">ccepy.aritmetica_elemental</span> <span class="kn">import</span> <span class="n">Zp</span><span class="p">,</span> <span class="n">PolinomioZp</span><span class="p">,</span> <span class="n">alg_euclides_polinomios</span>
 
 
-<span class="c1"># TODO: explicar en algun lado esto</span>
 <span class="nd">@functools.lru_cache</span><span class="p">()</span>
 <div class="viewcode-block" id="Fq"><a class="viewcode-back" href="../cuerpos_finitos.html#cuerpos_finitos.Fq">[documentos]</a><span class="k">def</span> <span class="nf">Fq</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pol_irreducible</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Devuelve el constructor de elementos del cuerpo finito con p**n elementos.</span>
@@ -176,7 +176,7 @@
 <span class="sd">        &gt;&gt;&gt; F16([0, 0, 0, 0, 1])</span>
 <span class="sd">        {[1, 0, 0, 1]; 16}</span>
 
-<span class="sd">    Se puede espeficiar el polinomio con el cual se hace módulo:</span>
+<span class="sd">    Se puede especificar el polinomio con el cual se hace módulo:</span>
 
 <span class="sd">        &gt;&gt;&gt; pol_irreducible = PolinomioZp([1, 1, 1, 0, 1], p=2)</span>
 <span class="sd">        &gt;&gt;&gt; pol_irreducible</span>
@@ -200,6 +200,7 @@
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Zp</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
+    <span class="c1"># Copiar la clase fuera de la función para que aparezca en la documentación</span>
     <span class="k">class</span> <span class="nc">ElementoFq</span><span class="p">(</span><span class="n">PolinomioZp</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Representa un elemento del cuerpo finito con q elementos.</span>
 
@@ -294,7 +295,6 @@
 
         <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
 
-        <span class="c1"># TODO: añadir ref al square-and-multiply del Handbook</span>
         <span class="nd">@classmethod</span>
         <span class="k">def</span> <span class="nf">_exponenciacion_binaria</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Calcula la potencia k-ésima del elemento g eficientemente.</span>
@@ -469,7 +469,6 @@
 
     <span class="n">__rmul__</span> <span class="o">=</span> <span class="n">__mul__</span>
 
-    <span class="c1"># TODO: añadir ref al square-and-multiply del Handbook</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_exponenciacion_binaria</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calcula la potencia k-ésima del elemento g eficientemente.</span>

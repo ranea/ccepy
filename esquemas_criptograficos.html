@@ -31,6 +31,7 @@
 
   
     <link rel="top" title="documentación de ccepy - 0.0.1" href="index.html"/>
+        <link rel="next" title="Listado de curvas elípticas" href="listado_curvas_elipticas.html"/>
         <link rel="prev" title="Curvas elípticas" href="curvas_elipticas.html"/> 
 
   
@@ -86,6 +87,7 @@
 <li class="toctree-l1"><a class="reference internal" href="cuerpos_finitos.html">Cuerpos finitos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="curvas_elipticas.html">Curvas elípticas</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Esquemas criptográficos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="listado_curvas_elipticas.html">Listado de curvas elípticas</a></li>
 </ul>
 
             
@@ -229,7 +231,7 @@ por el generador:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first last simple">
-<li><strong>curva_eliptica</strong> &#8211; el contructor de puntos de una curva elíptica.</li>
+<li><strong>curva_eliptica</strong> &#8211; el constructor de puntos de una curva elíptica.</li>
 <li><strong>generador</strong> &#8211; un punto de la curva elíptica.</li>
 <li><strong>orden</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; el orden del generador.</li>
 </ul>
@@ -295,7 +297,7 @@ secreto compartido.</p>
 es un esquema de firmado análogo al esquema DSA pero utilizando
 la multiplicación escalar de una curva elíptica en vez de la
 exponenciación modular.</p>
-<p>Veamos un ejemplo de la creación del participante que hará de firmador:</p>
+<p>Veamos un ejemplo de la creación del participante que hará de firmante:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos los parámetros</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">113</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">generador</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span>
@@ -318,7 +320,7 @@ mensaje que se desea firmar:</p>
 </div>
 <p>Para que otra entidad compruebe la firma, basta llamar a
 <a class="reference internal" href="#esquemas_criptograficos.ECDSA.verifica" title="esquemas_criptograficos.ECDSA.verifica"><code class="xref py py-meth docutils literal"><span class="pre">verifica()</span></code></a> pasándole como argumentos el mensaje,
-la firma y la llave pública del firmador:</p>
+la firma y la llave pública del firmante:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">ECDSA</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">verifica</span><span class="p">(</span><span class="n">mensaje</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span><span class="p">)</span>
 <span class="go">True</span>
@@ -345,7 +347,7 @@ por el generador:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parámetros:</th><td class="field-body"><ul class="first last simple">
-<li><strong>curva_eliptica</strong> &#8211; el contructor de puntos de una curva elíptica.</li>
+<li><strong>curva_eliptica</strong> &#8211; el constructor de puntos de una curva elíptica.</li>
 <li><strong>generador</strong> &#8211; un punto de la curva elíptica.</li>
 <li><strong>orden</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; el orden del generador.</li>
 </ul>
@@ -408,7 +410,7 @@ al mensaje y se firma sobre dicho hash.</p>
 
 <dl class="method">
 <dt id="esquemas_criptograficos.ECDSA.verifica">
-<code class="descname">verifica</code><span class="sig-paren">(</span><em>mensaje</em>, <em>r</em>, <em>s</em>, <em>llave_publica_firmador</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/esquemas_criptograficos.html#ECDSA.verifica"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#esquemas_criptograficos.ECDSA.verifica" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<code class="descname">verifica</code><span class="sig-paren">(</span><em>mensaje</em>, <em>r</em>, <em>s</em>, <em>llave_publica_firmante</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/esquemas_criptograficos.html#ECDSA.verifica"><span class="viewcode-link">[fuente]</span></a><a class="headerlink" href="#esquemas_criptograficos.ECDSA.verifica" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Comprueba la firma de un mensaje.</p>
 <p>No se firma todo el mensaje, sino que previo al firmado
 se le aplica la función hash <code class="docutils literal"><span class="pre">SHA-1</span></code> (del módulo <a class="reference external" href="https://docs.python.org/3/library/hashlib.html#module-hashlib" title="(en Python versión 3.5)"><code class="xref py py-mod docutils literal"><span class="pre">hashlib</span></code></a>)
@@ -423,7 +425,7 @@ al mensaje y se firma sobre dicho hash.</p>
 <li><strong>mensaje</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(en Python versión 3.5)"><em>str</em></a>) &#8211; el mensaje que se desea comprobar su firma.</li>
 <li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; la primera componente de la firma.</li>
 <li><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(en Python versión 3.5)"><em>int</em></a>) &#8211; la segunda componente de la firma.</li>
-<li><strong>llave_publica_firmador</strong> &#8211; la llave pública del firmado.</li>
+<li><strong>llave_publica_firmante</strong> &#8211; la llave pública del firmado.</li>
 </ul>
 </td>
 </tr>
@@ -448,6 +450,8 @@ al mensaje y se firma sobre dicho hash.</p>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="listado_curvas_elipticas.html" class="btn btn-neutral float-right" title="Listado de curvas elípticas" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="curvas_elipticas.html" class="btn btn-neutral" title="Curvas elípticas" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

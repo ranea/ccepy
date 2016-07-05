@@ -13,9 +13,9 @@ Contenidos:
    cuerpos_finitos
    curvas_elipticas
    esquemas_criptograficos
+   listado_curvas_elipticas
 
 .. .. currentmodule:: sphinx
-
 
 Lista de módulos:
 
@@ -24,6 +24,7 @@ Lista de módulos:
    cuerpos_finitos
    curvas_elipticas
    esquemas_criptograficos
+   listado_curvas_elipticas
 
 .. Índices y tablas
 .. ================

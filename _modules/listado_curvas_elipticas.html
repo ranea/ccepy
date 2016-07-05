@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>listado_curvas_elipticas &mdash; documentación de ccepy - 0.0.1</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="documentación de ccepy - 0.0.1" href="../index.html"/>
+        <link rel="up" title="Código de módulo" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ccepy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Primeros pasos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aritmetica_elemental.html">Aritmética elemental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cuerpos_finitos.html">Cuerpos finitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../curvas_elipticas.html">Curvas elípticas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../esquemas_criptograficos.html">Esquemas criptográficos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../listado_curvas_elipticas.html">Listado de curvas elípticas</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">ccepy</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Código de módulo</a> &raquo;</li>
+      
+    <li>listado_curvas_elipticas</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Código fuente para listado_curvas_elipticas</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Listado de curvas elípticas.</span>
+
+<span class="sd">Este módulo ofrece una serie de curvas elípticas listas para utilizar.</span>
+<span class="sd">Estas curvas se han sacado de varios estándares.</span>
+
+<span class="sd">Para utilizar las curvas aquí listadas, debe importar la función</span>
+<span class="sd">:func:`parametros_dominio` ::</span>
+
+<span class="sd">    from ccepy.listado_curvas_elipticas import parametros_dominio</span>
+
+<span class="sd">Para trabajar con una curva, basta llamar a esta función pasándole</span>
+<span class="sd">como parámetro el nombre de la curva a utilizar:</span>
+
+<span class="sd">    &gt;&gt;&gt; E, P, n = parametros_dominio(&quot;secp256k1&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; E  # la curva elíptica</span>
+<span class="sd">    ccepy.curvas_elipticas.curva_eliptica_sobre_Fq.&lt;locals&gt;.PuntoFqRacional</span>
+<span class="sd">    &gt;&gt;&gt; E.Fq.p  # el numero de elementos del cuerpo finito</span>
+<span class="sd">    115792089237316195423570985008687907853269984665640564039457584007908834671663</span>
+<span class="sd">    &gt;&gt;&gt; E.coeficientes</span>
+<span class="sd">    Coeficientes(a=0, b=7)</span>
+<span class="sd">    &gt;&gt;&gt; P  # un punto de E</span>
+<span class="sd">    (55066263022277343669578718895168534326250603453777594175500187360389116729240,32670510020758816978083085130507043184471273380659243275938904335757337482424)</span>
+<span class="sd">    &gt;&gt;&gt; n  # el orden del punto P</span>
+<span class="sd">    115792089237316195423570985008687907852837564279074904382605163141518161494337</span>
+
+<span class="sd">Los nombres de las curvas disponibles son:</span>
+
+<span class="sd">- Anomalous</span>
+<span class="sd">- NIST P-224</span>
+<span class="sd">- BN(2,254)</span>
+<span class="sd">- brainpoolP256t1</span>
+<span class="sd">- ANSSI FRP256v1</span>
+<span class="sd">- NIST P-256</span>
+<span class="sd">- secp256k1</span>
+<span class="sd">- brainpoolP384t1</span>
+<span class="sd">- NIST P-384</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+
+<span class="kn">from</span> <span class="nn">ccepy.curvas_elipticas</span> <span class="kn">import</span> <span class="n">curva_eliptica_sobre_Fq</span>
+
+
+<span class="n">ParametrosCurvaElipticaSobreFq</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;CurvaElípticaSobreFq&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;x1&#39;</span><span class="p">,</span> <span class="s1">&#39;y1&#39;</span><span class="p">,</span> <span class="s1">&#39;orden&#39;</span><span class="p">])</span>
+
+
+<span class="c1"># Listado de curvas</span>
+<span class="n">curvas_eliptipcas_sobre_Fq_famosas</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;Anomalous&quot;</span><span class="p">,</span>  <span class="c1"># nombre</span>
+        <span class="mi">17676318486848893030961583018778670610489016512983351739677143</span><span class="p">,</span>  <span class="c1"># p</span>
+        <span class="mi">15347898055371580590890576721314318823207531963035637503096292</span><span class="p">,</span>  <span class="c1"># a</span>
+        <span class="mi">7444386449934505970367865204569124728350661870959593404279615</span><span class="p">,</span>  <span class="c1"># b</span>
+        <span class="mi">1619092589586542907492569170434842128165755668543894279235270</span><span class="p">,</span>  <span class="c1"># x1</span>
+        <span class="mi">3436949547626524920645513316569700140535482973634182925459687</span><span class="p">,</span>  <span class="c1"># y1</span>
+        <span class="mi">17676318486848893030961583018778670610489016512983351739677143</span><span class="p">,</span>  <span class="c1"># orden</span>
+    <span class="p">),</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;NIST P-224&quot;</span><span class="p">,</span>
+        <span class="mi">26959946667150639794667015087019630673557916260026308143510066298881</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+        <span class="mi">18958286285566608000408668544493926415504680968679321075787234672564</span><span class="p">,</span>
+        <span class="mi">19277929113566293071110308034699488026831934219452440156649784352033</span><span class="p">,</span>
+        <span class="mi">19926808758034470970197974370888749184205991990603949537637343198772</span><span class="p">,</span>
+        <span class="mi">26959946667150639794667015087019625940457807714424391721682722368061</span>
+    <span class="p">),</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;BN(2,254)&quot;</span><span class="p">,</span>
+        <span class="mi">16798108731015832284940804142231733909889187121439069848933715426072753864723</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">16798108731015832284940804142231733909759579603404752749028378864165570215949</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;brainpoolP256t1&quot;</span><span class="p">,</span>
+        <span class="mi">76884956397045344220809746629001649093037950200943055203735601445031516197751</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+        <span class="mi">46214326585032579593829631435610129746736367449296220983687490401182983727876</span><span class="p">,</span>
+        <span class="mi">74138526386500101787937404544159543470173440588427591213843535686338908194292</span><span class="p">,</span>
+        <span class="mi">20625154686056605250529482107801269759951443923312408063441227608803066104254</span><span class="p">,</span>
+        <span class="mi">76884956397045344220809746629001649092737531784414529538755519063063536359079</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;ANSSI FRP256v1&quot;</span><span class="p">,</span>
+        <span class="mi">109454571331697278617670725030735128145969349647868738157201323556196022393859</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+        <span class="mi">107744541122042688792155207242782455150382764043089114141096634497567301547839</span><span class="p">,</span>
+        <span class="mi">82638672503301278923015998535776227331280144783487139112686874194432446389503</span><span class="p">,</span>
+        <span class="mi">43992510890276411535679659957604584722077886330284298232193264058442323471611</span><span class="p">,</span>
+        <span class="mi">109454571331697278617670725030735128146004546811402412653072203207726079563233</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;NIST P-256&quot;</span><span class="p">,</span>
+        <span class="mi">115792089210356248762697446949407573530086143415290314195533631308867097853951</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+        <span class="mi">41058363725152142129326129780047268409114441015993725554835256314039467401291</span><span class="p">,</span>
+        <span class="mi">48439561293906451759052585252797914202762949526041747995844080717082404635286</span><span class="p">,</span>
+        <span class="mi">36134250956749795798585127919587881956611106672985015071877198253568414405109</span><span class="p">,</span>
+        <span class="mi">115792089210356248762697446949407573529996955224135760342422259061068512044369</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;secp256k1&quot;</span><span class="p">,</span>
+        <span class="mi">115792089237316195423570985008687907853269984665640564039457584007908834671663</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">7</span><span class="p">,</span>
+        <span class="mi">55066263022277343669578718895168534326250603453777594175500187360389116729240</span><span class="p">,</span>
+        <span class="mi">32670510020758816978083085130507043184471273380659243275938904335757337482424</span><span class="p">,</span>
+        <span class="mi">115792089237316195423570985008687907852837564279074904382605163141518161494337</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;brainpoolP384t1&quot;</span><span class="p">,</span>
+        <span class="mi">21659270770119316173069236842332604979796116387017648600081618503821089934025961822236561982844534088440708417973331</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+        <span class="mi">19596161053329239268181228455226581162286252326261019516900162717091837027531392576647644262320816848087868142547438</span><span class="p">,</span>
+        <span class="mi">3827769047710394604076870463731979903132904572714069494181204655675960538951736634566672590576020545838501853661388</span><span class="p">,</span>
+        <span class="mi">5797643717699939326787282953388004860198302425468870641753455602553471777319089854136002629714659021021358409132328</span><span class="p">,</span>
+        <span class="mi">21659270770119316173069236842332604979796116387017648600075645274821611501358515537962695117368903252229601718723941</span>
+    <span class="p">),</span>
+    <span class="n">ParametrosCurvaElipticaSobreFq</span><span class="p">(</span>
+        <span class="s2">&quot;NIST P-384&quot;</span><span class="p">,</span>
+        <span class="mi">39402006196394479212279040100143613805079739270465446667948293404245721771496870329047266088258938001861606973112319</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+        <span class="mi">27580193559959705877849011840389048093056905856361568521428707301988689241309860865136260764883745107765439761230575</span><span class="p">,</span>
+        <span class="mi">26247035095799689268623156744566981891852923491109213387815615900925518854738050089022388053975719786650872476732087</span><span class="p">,</span>
+        <span class="mi">8325710961489029985546751289520108179287853048861315594709205902480503199884419224438643760392947333078086511627871</span><span class="p">,</span>
+        <span class="mi">39402006196394479212279040100143613805079739270465446667946905279627659399113263569398956308152294913554433653942643</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">procesar_parametros_curva_eliptica</span><span class="p">(</span><span class="n">parametros_curva_eliptica</span><span class="p">):</span>
+    <span class="n">ce</span> <span class="o">=</span> <span class="n">parametros_curva_eliptica</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">ce</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">ce</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">ce</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">generador</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="n">ce</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span> <span class="n">ce</span><span class="o">.</span><span class="n">y1</span><span class="p">)</span>
+    <span class="n">orden</span> <span class="o">=</span> <span class="n">ce</span><span class="o">.</span><span class="n">orden</span>
+    <span class="k">return</span> <span class="n">E</span><span class="p">,</span> <span class="n">generador</span><span class="p">,</span> <span class="n">orden</span>
+
+
+<div class="viewcode-block" id="parametros_dominio"><a class="viewcode-back" href="../listado_curvas_elipticas.html#listado_curvas_elipticas.parametros_dominio">[documentos]</a><span class="k">def</span> <span class="nf">parametros_dominio</span><span class="p">(</span><span class="n">nombre</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Devuelve los parámetros de dominio de una curva en el listado.:</span>
+
+<span class="sd">        &gt;&gt;&gt; E, P, n = parametros_dominio(&quot;secp256k1&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; E.Fq.p</span>
+<span class="sd">        115792089237316195423570985008687907853269984665640564039457584007908834671663</span>
+<span class="sd">        &gt;&gt;&gt; E.coeficientes</span>
+<span class="sd">        Coeficientes(a=0, b=7)</span>
+<span class="sd">        &gt;&gt;&gt; P</span>
+<span class="sd">        (55066263022277343669578718895168534326250603453777594175500187360389116729240,32670510020758816978083085130507043184471273380659243275938904335757337482424)</span>
+<span class="sd">        &gt;&gt;&gt; n</span>
+<span class="sd">        115792089237316195423570985008687907852837564279074904382605163141518161494337</span>
+
+<span class="sd">    Los nombres de las curvas en el listado son:</span>
+
+<span class="sd">    - Anomalous</span>
+<span class="sd">    - NIST P-224</span>
+<span class="sd">    - BN(2,254)</span>
+<span class="sd">    - brainpoolP256t1</span>
+<span class="sd">    - ANSSI FRP256v1</span>
+<span class="sd">    - NIST P-256</span>
+<span class="sd">    - secp256k1</span>
+<span class="sd">    - brainpoolP384t1</span>
+<span class="sd">    - NIST P-384</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nombre (str): uno de los nombres de la lista de arriba.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple: una tupla (E, P, n) donde E es una curva elítipca, P un punto</span>
+<span class="sd">        y n el orden de P. Si no existe ninguna curva con dicho nombre,</span>
+<span class="sd">        se devuelve ``None``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">param_dominio</span> <span class="ow">in</span> <span class="n">curvas_eliptipcas_sobre_Fq_famosas</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">param_dominio</span><span class="o">.</span><span class="n">nombre</span> <span class="o">==</span> <span class="n">nombre</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">procesar_parametros_curva_eliptica</span><span class="p">(</span><span class="n">param_dominio</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Adrian Ranea.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
