@@ -10,8 +10,7 @@ from hypothesis.strategies import integers, lists, sampled_from
 from ccepy import aritmetica_elemental  # para cargar los docstring
 from ccepy.aritmetica_elemental import PolinomioZp, Zp, alg_euclides, alg_euclides_polinomios
 
-
-# TODO: secuencia A000040
+# secuencia A000040 de OEIS
 primos = [
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
     61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131,
@@ -20,7 +19,7 @@ primos = [
 ]
 
 
-# TODO: http://mathworld.wolfram.com/IrreduciblePolynomial.html
+# http://mathworld.wolfram.com/IrreduciblePolynomial.html
 irreducibles_Z2_hasta_grado_4 = [
     PolinomioZp([1, 1], p=2),
     PolinomioZp([0, 1], p=2),
@@ -139,7 +138,6 @@ class TestPolinomioZp(unittest.TestCase):
         assert ((p * q).grado()) == p.grado() + q.grado()
         assert (p + q).grado() <= max(p.grado(), q.grado())
 
-    # @settings(perform_health_check=False)
     @given(integers(min_value=1, max_value=4))
     def test_polinomios_irreducibles_Z2(self, n):
         assume(n)
@@ -158,7 +156,6 @@ class TestAlgoritmoExtendidoEuclides(unittest.TestCase):
             assert x < b // d
             assert y < a // d
 
-    # TODO: quitar debug
     @given(lists(integers()), lists(integers()), sampled_from(primos))
     def test_alg_euclides_polinomios(self, l1, l2, primo):
         assume(l1)
@@ -167,12 +164,9 @@ class TestAlgoritmoExtendidoEuclides(unittest.TestCase):
         h = PolinomioZp(l2, primo)
         cero = PolinomioZp([0], primo)
         assume(g != cero)
-        # print("p: {0}\ng: {1}\nh: {2}".format(primo, g, h))
         s, t, d = alg_euclides_polinomios(g, h, p=primo)
-        # print("s: {0}\nt: {1}\nd: {2}".format(s, t, d))
         assert s * g + t * h == d
         assert g % d == 0 and h % d == 0  # vemos si el gcd divide a ambos
-        # Añadir referencia del handbook
         if h != cero:
             assert s.grado() <= h.grado() and t.grado() <= g.grado()
 

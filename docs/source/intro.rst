@@ -1,4 +1,8 @@
 Primeros pasos
 **************
 
-Explicar un poco como usar este módulo.
+.. TODO: completar
+
+Instalar ccepy
+
+https://github.com/ranea/ccepy
