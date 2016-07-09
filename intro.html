@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Primeros pasos &mdash; documentación de ccepy - 0.0.1</title>
+  <title>Primeros pasos &mdash; documentación de ccepy - 1.0.0</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="documentación de ccepy - 0.0.1" href="index.html"/>
+    <link rel="top" title="documentación de ccepy - 1.0.0" href="index.html"/>
         <link rel="next" title="Aritmética elemental" href="aritmetica_elemental.html"/>
         <link rel="prev" title="Documentación de ccepy" href="index.html"/> 
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.0.1
+                1.0.0
               </div>
             
           
@@ -82,7 +82,11 @@
             
             
                 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Primeros pasos</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Primeros pasos</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#instalacion">Instalación</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#uso">Uso</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="aritmetica_elemental.html">Aritmética elemental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cuerpos_finitos.html">Cuerpos finitos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="curvas_elipticas.html">Curvas elípticas</a></li>
@@ -134,7 +138,83 @@
             
   <div class="section" id="primeros-pasos">
 <h1>Primeros pasos<a class="headerlink" href="#primeros-pasos" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>Explicar un poco como usar este módulo.</p>
+<div class="section" id="instalacion">
+<h2>Instalación<a class="headerlink" href="#instalacion" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para instalar la última versión de <em>ccepy</em>, simplemente ejecute:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ccepy</span>
+</pre></div>
+</div>
+<p><em>pip</em> se encuentra ya instalado por defecto en las últimas distribuciones
+de python. Si no es su caso, <a class="reference external" href="https://packaging.python.org/installing/">aquí</a>
+se explica como instalar pip.</p>
+</div>
+<div class="section" id="uso">
+<h2>Uso<a class="headerlink" href="#uso" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Una vez instalado <em>ccepy</em>, para utilizarlo basta importarlo
+y usar las distintas funciones o clases presentes.</p>
+<p>Por ejemplo, dada la curva elíptica definida por
+la ecuación <span class="math">\(y^2 = x^3 + 2 x + 3\)</span> sobre el cuerpo
+finito de 97 elementos <span class="math">\(\mathbb{F}_{97}\)</span>, el siguiente trozo
+de código calcula la suma <span class="math">\((0, 10) + (3, 6)\)</span>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ccepy.curvas_elipticas</span> <span class="k">import</span> <span class="n">curva_eliptica_sobre_Fq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">97</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="n">E</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">(85,71)</span>
+</pre></div>
+</div>
+<p>O por otro lado, supongamos que quiere simular el protocolo
+Diffie-Hellman de intercambio de llaves utilizando como
+parámetros de dominio la curva elíptica  <span class="math">\(y^2 = x^3 + 324 x + 1287\)</span>
+definida sobre <span class="math">\(\mathbb{F}_{3851}\)</span> y el subgrupo generado
+por el punto <span class="math">\(P = (0, 10)\)</span> de orden <span class="math">\(8\)</span>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ccepy.curvas_elipticas</span> <span class="k">import</span> <span class="n">curva_eliptica_sobre_Fq</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ccepy.esquemas_criptograficos</span> <span class="k">import</span> <span class="n">ECDH</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos los parámetros de dominio</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">curva_eliptica_sobre_Fq</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">324</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1287</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">3851</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="mi">920</span><span class="p">,</span> <span class="mi">303</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orden_P</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># definimos los participantes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">orden_P</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span> <span class="o">=</span> <span class="n">ECDH</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">orden_P</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># la pareja de llaves se genera automáticamente y aleatoriamente</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span>
+<span class="go">(2373,2607)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_privada</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">alicia</span><span class="o">.</span><span class="n">calcula_secreto_compartido</span><span class="p">(</span><span class="n">bob</span><span class="o">.</span><span class="n">llave_publica</span><span class="p">)</span>
+<span class="go">1136</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bob</span><span class="o">.</span><span class="n">calcula_secreto_compartido</span><span class="p">(</span><span class="n">alicia</span><span class="o">.</span><span class="n">llave_publica</span><span class="p">)</span>
+<span class="go">1136</span>
+</pre></div>
+</div>
+<p>Puede encontrar la funcionalidad completa de esta programa
+estructurada en los siguientes módulos:</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="aritmetica_elemental.html#module-aritmetica_elemental" title="aritmetica_elemental"><code class="xref py py-obj docutils literal"><span class="pre">aritmetica_elemental</span></code></a></td>
+<td>Aritmética elemental con enteros y polinomios.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="cuerpos_finitos.html#module-cuerpos_finitos" title="cuerpos_finitos"><code class="xref py py-obj docutils literal"><span class="pre">cuerpos_finitos</span></code></a></td>
+<td>Cuerpos finitos.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="curvas_elipticas.html#module-curvas_elipticas" title="curvas_elipticas"><code class="xref py py-obj docutils literal"><span class="pre">curvas_elipticas</span></code></a></td>
+<td>Aritmética con curvas elípticas.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="esquemas_criptograficos.html#module-esquemas_criptograficos" title="esquemas_criptograficos"><code class="xref py py-obj docutils literal"><span class="pre">esquemas_criptograficos</span></code></a></td>
+<td>Esquemas criptográficos con curvas elípticas.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="listado_curvas_elipticas.html#module-listado_curvas_elipticas" title="listado_curvas_elipticas"><code class="xref py py-obj docutils literal"><span class="pre">listado_curvas_elipticas</span></code></a></td>
+<td>Listado de curvas elípticas.</td>
+</tr>
+</tbody>
+</table>
+<p>Le recomendamos que lea la documentación de cada módulo en este
+orden para aprender totalmente a usar <em>ccepy</em>.</p>
+</div>
 </div>
 
 
@@ -178,7 +258,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'1.0.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
