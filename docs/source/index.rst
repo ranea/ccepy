@@ -5,7 +5,7 @@ Bienvenido a la documentación de *Criptografía con Curvas Elípticas con Pytho
 
 *ccepy* es una biblioteca para *python 3* que permite trabajar con el grupo de
 puntos de una curva elíptica y desarrollar protocolos criptográficos basados en
-curvas elípticas. También permite hacer con cuerpos finitos y con
+curvas elípticas. También permite hacer operaciones con cuerpos finitos y con
 enteros módulo un primo.
 
 Contenidos:
