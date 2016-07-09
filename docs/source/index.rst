@@ -11,18 +11,9 @@ enteros módulo un primo.
 Contenidos:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    intro
-   aritmetica_elemental
-   cuerpos_finitos
-   curvas_elipticas
-   esquemas_criptograficos
-   listado_curvas_elipticas
-
-Lista de módulos:
-
-.. autosummary::
    aritmetica_elemental
    cuerpos_finitos
    curvas_elipticas
