@@ -13,7 +13,9 @@ El programa *ccepy* se ha desarrollado para el Trabajo Fin
 de Grado, *Curvas Elípticas en Criptografía*.
 
 Enlaces:
+
 - `Documentación 
-<https://ranea.github.io/ccepy/>`_
-- `Curvas Elípticas en Criptografía*
-<https://github.com/ranea/TFG>`_
+  <https://ranea.github.io/ccepy/>`_
+
+- `Curvas Elípticas en Criptografía
+  <https://github.com/ranea/TFG>`_
