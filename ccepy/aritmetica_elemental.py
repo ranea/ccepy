@@ -48,6 +48,7 @@ import math
 import copy
 import random
 
+
 def alg_euclides(a, b):
     """Calcula el algoritmo extendido de Euclides para enteros.
 
@@ -199,7 +200,7 @@ def Zp(p):
                 raise RuntimeError("Instancie usando la función Zp()")
             return super().__new__(cls, entero % EnteroModuloP.p)
 
-        # TODO: descomentar este método solo para la documentación
+        # descomentar este método solo para la documentación
         # def __init__(self, entero):
         #    pass
 
@@ -264,126 +265,6 @@ def Zp(p):
     EnteroModuloP.p = p
     EnteroModuloP.__name__ = "Z{0}".format(p)
     return EnteroModuloP
-
-
-# TODO: remover clase tras realizar documentación
-class EnteroModuloP(int):
-    """Representa un entero módulo un primo p.
-
-        >>> Z7 = Zp(7)
-        >>> n, m = Z7(2), Z7(6)
-        >>> type(n)
-        <class 'ccepy.aritmetica_elemental.Zp.<locals>.EnteroModuloP'>
-        >>> n
-        2
-        >>> m
-        6
-        >>> n + m
-        1
-        >>> n * m
-        5
-        >>> m ** (-1)
-        6
-
-    Soporta los operadores ``+``, ``-``, ``*``, ``/`` y ``**`` con su
-    significado habitual.
-
-    Los operandos pueden ser ambos de tipo :class:`EnteroModuloP` o bien uno
-    de tipo :class:`EnteroModuloP` y otro de tipo :py:class:`int`. En ambos
-    casos el resultado será de tipo :class:`EnteroModuloP`.
-
-    Args:
-        entero (int): el valor del entero.
-
-    Attributes:
-        p (int): el primo p (*atributo de clase*).
-    """
-    p = None
-
-    @classmethod
-    def cero(cls):
-        """Devuelve el cero.
-
-        Return:
-            EnteroModuloP: el cero.
-        """
-        return EnteroModuloP(0)
-
-    @classmethod
-    def uno(cls):
-        """Devuelve el uno.
-
-        Return:
-            EnteroModuloP: el uno.
-        """
-        return EnteroModuloP(1)
-
-    def __new__(cls, entero):
-        if EnteroModuloP.p is None:
-            raise RuntimeError("Instancie usando la función Zp()")
-        return super().__new__(cls, entero % EnteroModuloP.p)
-
-    # TODO: descomentar este método solo para la documentación
-    def __init__(self, entero):
-        pass
-
-    def __eq__(self, m):
-        return super().__eq__(EnteroModuloP(m))
-
-    def __ne__(self, m):
-        return not self.__eq__(m)
-
-    def __add__(self, m):
-        return EnteroModuloP(super().__add__(m))
-
-    __radd__ = __add__
-
-    def __neg__(self):
-        return EnteroModuloP(super().__neg__())
-
-    def __sub__(self, m):
-        return EnteroModuloP(self + (-m))
-
-    def __rsub__(self, m):
-        return -self.__sub__(m)
-
-    def __mul__(self, m):
-        return EnteroModuloP(super().__mul__(m))
-
-    __rmul__ = __mul__
-
-    def __pow__(self, m):
-        if m < 0:
-            inverso = self.inverso()
-            return inverso ** (-m)
-        else:
-            return EnteroModuloP(super().__pow__(m, EnteroModuloP.p))
-
-    def inverso(self):
-        """Devuelve el inverso módulo p.
-
-            >>> Z7 = Zp(7)
-            >>> Z7(6).inverso()
-            6
-
-        Return:
-            EnteroModuloP: el inverso.
-        """
-        if self == 0:
-            raise ZeroDivisionError
-
-        x, y, d = alg_euclides(self, EnteroModuloP.p)
-        return EnteroModuloP(x)
-
-    def __truediv__(self, m):
-        return self * EnteroModuloP(m).inverso()
-
-    def __rtruediv__(self, m):
-        return EnteroModuloP(m).__truediv__(self)
-
-    # Necesario para @lru_cache
-    def __hash__(self):
-        return super().__hash__()
 
 
 class PolinomioZp:
